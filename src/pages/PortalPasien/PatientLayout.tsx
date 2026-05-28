@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 
 export default function PatientLayout() {
   const navigate = useNavigate();
@@ -7,9 +7,9 @@ export default function PatientLayout() {
   const [patient, setPatient] = useState<any>(null);
 
   useEffect(() => {
-    const session = localStorage.getItem('patient_session');
+    const session = localStorage.getItem("patient_session");
     if (!session) {
-      navigate('/portal/pendaftaran');
+      navigate("/portal/pendaftaran");
     } else {
       setPatient(JSON.parse(session));
     }
@@ -17,21 +17,24 @@ export default function PatientLayout() {
 
   if (!patient) return null;
 
-  const activeTab = location.pathname.split('/').pop() || 'dashboard';
+  const activeTab = location.pathname.split("/").pop() || "dashboard";
 
   const handleTabChange = (tabId: string) => {
     navigate(`/portal/pendaftaran/${tabId}`);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('patient_session');
-    navigate('/portal/pendaftaran');
+    localStorage.removeItem("patient_session");
+    navigate("/portal/pendaftaran");
   };
 
   const tabs = [
     { id: "dashboard", label: "Ringkasan" },
-    { id: "rme", label: "Rekam Medis Elektronik" },
+    { id: "rme", label: "Riwayat Klinis & RME" },
     { id: "daftar", label: "Pendaftaran Berobat" },
+    { id: "telemedisin", label: "Telekonsultasi" },
+    { id: "lab", label: "Hasil Lab & Rad" },
+    { id: "tagihan", label: "Info Tagihan" },
   ];
 
   return (
@@ -81,12 +84,14 @@ export default function PatientLayout() {
                     No. RM: {patient.mrn} · NIK: {patient.nik}
                   </p>
                   <p className="text-[11px] text-slate-500">
-                    Tgl Lahir: {patient.birthDate} · Gol. Darah: {patient.bloodType}
+                    Tgl Lahir: {patient.birthDate} · Gol. Darah:{" "}
+                    {patient.bloodType}
                   </p>
                 </div>
               </div>
               <div className="text-[10px] text-slate-500">
-                Simulasi akademik: data pasien, kunjungan, dan biaya bersifat dummy.
+                Simulasi akademik: data pasien, kunjungan, dan biaya bersifat
+                dummy.
               </div>
             </div>
 

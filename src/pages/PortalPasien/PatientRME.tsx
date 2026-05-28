@@ -1,18 +1,31 @@
-import React from 'react';
-import { DUMMY_VISITS, VISIT_STATUS_BADGE } from '../../data/mockData';
+import React from "react";
+import { DUMMY_VISITS, VISIT_STATUS_BADGE } from "../../data/mockData";
+import { Download } from "lucide-react";
 
 export default function PatientRME() {
   const visits = DUMMY_VISITS;
 
+  const handleDownload = () => {
+    alert("Simulasi: Mengunduh ringkasan Rekam Medis Elektronik (PDF)...");
+  };
+
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-slate-900">
-          Riwayat Kunjungan dan Rekam Medis
-        </h3>
-        <p className="text-[11px] text-slate-500">
-          Menampilkan riwayat kunjungan, ICD-10, tindakan, dan biaya.
-        </p>
+    <div className="space-y-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <div>
+          <h3 className="text-lg font-bold text-slate-800">
+            Riwayat Kunjungan dan Rekam Medis
+          </h3>
+          <p className="text-sm text-slate-500">
+            Menampilkan riwayat kunjungan, ICD-10, tindakan, dan biaya.
+          </p>
+        </div>
+        <button 
+          onClick={handleDownload}
+          className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm transition-colors text-sm flex items-center justify-center gap-2 border border-slate-200"
+        >
+          <Download className="w-4 h-4" /> Unduh RME
+        </button>
       </div>
 
       <div className="overflow-x-auto border border-slate-200 rounded-lg">
@@ -46,11 +59,11 @@ export default function PatientRME() {
             {visits.map((visit) => {
               const procedureTotal = visit.procedures.reduce(
                 (sum, p) => sum + p.tariff,
-                0
+                0,
               );
               const drugTotal = visit.drugPrescription.reduce(
                 (sum, d) => sum + d.cost,
-                0
+                0,
               );
               const total = procedureTotal + drugTotal + visit.adminFee;
 
@@ -95,9 +108,7 @@ export default function PatientRME() {
                       ))}
                       <li className="flex justify-between text-[10px] text-slate-600 border-t border-dashed border-slate-200 pt-1 mt-1">
                         <span>Subtotal Tindakan</span>
-                        <span>
-                          Rp {procedureTotal.toLocaleString("id-ID")}
-                        </span>
+                        <span>Rp {procedureTotal.toLocaleString("id-ID")}</span>
                       </li>
                     </ul>
                   </td>
@@ -124,8 +135,7 @@ export default function PatientRME() {
                   </td>
                   <td className="border-b border-slate-200 px-2 py-2 align-top">
                     <div className="text-[10px] text-slate-600 mb-1">
-                      Administrasi: Rp{" "}
-                      {visit.adminFee.toLocaleString("id-ID")}
+                      Administrasi: Rp {visit.adminFee.toLocaleString("id-ID")}
                     </div>
                     <div className="text-sm font-semibold text-slate-900 whitespace-nowrap">
                       Rp {total.toLocaleString("id-ID")}

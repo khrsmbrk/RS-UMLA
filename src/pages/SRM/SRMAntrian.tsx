@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   ClipboardList,
   Megaphone,
@@ -7,9 +8,14 @@ import {
   Settings,
   Plus,
   Volume2,
-  VolumeX
+  VolumeX,
+  MonitorPlay,
+  Printer,
+  MessageCircle
 } from "lucide-react";
 import { useSRMStore } from "../../store/srmStore";
+
+import SRMAntrianTV from './SRMAntrianTV';
 
 const SRMAntrian = () => {
   const queueState = useSRMStore((state) => state.queueToday);
@@ -23,17 +29,156 @@ const SRMAntrian = () => {
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [newPatientRM, setNewPatientRM] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
+  
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState<string>("");
+  const [isFullscreenTV, setIsFullscreenTV] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
+  if (isFullscreenTV) {
+    return (
+      <div className="fixed inset-0 z-[9999] bg-slate-900 overflow-hidden w-screen h-screen">
+        <div className="absolute top-4 right-4 z-[10000] flex gap-2">
+          <button 
+            onClick={() => document.documentElement.requestFullscreen().catch(e => console.log(e))}
+            className="bg-black/50 hover:bg-black/70 text-white rounded px-3 py-1.5 text-sm font-bold backdrop-blur transition hidden md:block"
+          >
+            Fullscreen OS
+          </button>
+          <button 
+            onClick={() => {
+              if (document.fullscreenElement) {
+                document.exitFullscreen().catch(e => console.log(e));
+              }
+              setIsFullscreenTV(false);
+            }} 
+            className="bg-red-500 hover:bg-red-600 text-white rounded px-4 py-1.5 text-sm font-bold backdrop-blur shadow-lg transition"
+          >
+            Tutup Layar TV
+          </button>
+        </div>
+        <div className="w-full h-full overflow-hidden">
+           <SRMAntrianTV />
+        </div>
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    if (!window.speechSynthesis) return;
+
+    const updateVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      let idVoices = voices.filter(v => v.lang === "id-ID" || v.lang === "id_ID");
+      if (idVoices.length === 0) idVoices = voices;
+      
+      setAvailableVoices(idVoices);
+
+      if (idVoices.length > 0) {
+        const googleVoice = idVoices.find(v => v.name.includes("Google") || v.name.includes("Damayanti"));
+        if (googleVoice) {
+          setSelectedVoiceURI(googleVoice.voiceURI);
+        } else {
+          setSelectedVoiceURI(idVoices[0].voiceURI);
+        }
+      }
+    };
+
+    updateVoices();
+    window.speechSynthesis.onvoiceschanged = updateVoices;
+    
+    return () => {
+       window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+
+  const playTTS = (noAntrian: string | number, nama?: string) => {
+    if (!isSoundEnabled || !window.speechSynthesis) return;
+
+    window.speechSynthesis.cancel();
+    
+    let text = `Nomor antrian, ${noAntrian}.`;
+    if (nama) text += ` Atas nama, ${nama}.`;
+    text += ` Silahkan menuju ruang pemeriksaan.`;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "id-ID";
+    utterance.rate = 0.85;
+    utterance.pitch = 1;
+
+    const voices = window.speechSynthesis.getVoices();
+    const selectedVoiceObj = voices.find(v => v.voiceURI === selectedVoiceURI);
+    
+    if (selectedVoiceObj) {
+      utterance.voice = selectedVoiceObj;
+    } else {
+      const idVoice = voices.find(v => v.lang === "id-ID");
+      if (idVoice) utterance.voice = idVoice;
+    }
+
+    window.speechSynthesis.speak(utterance);
+  };
+
   const handleAddQueue = () => {
     if (!newPatientName.trim()) return;
     addQueue(newPatientName, newPatientRM);
     setNewPatientName("");
     setNewPatientRM("");
+  };
+
+  const printTicket = (item: any) => {
+    const printContent = `
+      <div style="font-family: monospace; width: 300px; padding: 20px; text-align: center; color: black;">
+        <h2 style="margin: 0; font-size: 24px;">KLINIK SEJAHTERA</h2>
+        <p style="margin: 5px 0; font-size: 14px;">Tiket Antrian Pasien</p>
+        <hr style="border: 1px dashed black; margin: 15px 0" />
+        <h1 style="font-size: 64px; margin: 10px 0;">${item.nomor}</h1>
+        <p style="font-size: 18px; font-weight: bold; margin: 5px 0;">${item.nama}</p>
+        <p style="margin: 5px 0; font-size: 14px;">RM: ${item.patientId || '-'}</p>
+        <hr style="border: 1px dashed black; margin: 15px 0" />
+        <p style="font-size: 12px;">Waktu: ${new Date(item.waktuDaftar).toLocaleString('id-ID')}</p>
+        <p style="font-size: 12px; margin-top: 10px;">Silakan tunggu giliran Anda. Terima kasih.</p>
+      </div>
+      <script>
+        window.onload = function() { window.print(); window.close(); }
+      </script>
+    `;
+    const printWindow = window.open('', '', 'width=400,height=600');
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+    }
+  };
+
+  const sendWA = (item: any) => {
+    const message = `Halo ${item.nama}, nomor antrian Anda adalah *${item.nomor}*. Silakan bersiap-siap menuju ruang pemeriksaan karena giliran Anda sudah dekat. Terima kasih.`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
+  const currentQueueItem = queueState.list.find(
+    (q) => q.status === "Sedang Diperiksa",
+  );
+  const currentQueueNumber = currentQueueItem ? currentQueueItem.nomor : "-";
+
+  const nextQueueItem = queueState.list.find((q) => q.status === "Menunggu");
+  const nextQueueNumber = nextQueueItem ? nextQueueItem.nomor : "---";
+
+  const handleCallNext = async () => {
+    if (nextQueueItem) {
+      playTTS(nextQueueItem.nomor, nextQueueItem.nama);
+    }
+    await callNextQueue();
+  };
+
+  const handleCallAgain = () => {
+    if (currentQueueItem) {
+      playTTS(currentQueueItem.nomor, currentQueueItem.nama);
+      callQueueAgain();
+    }
   };
 
   const waitingCount = queueState.list.filter(
@@ -43,15 +188,6 @@ const SRMAntrian = () => {
     (q) => q.status === "Selesai",
   ).length;
   const totalCount = queueState.list.length;
-
-  // Find next queue
-  const nextQueueItem = queueState.list.find((q) => q.status === "Menunggu");
-  const nextQueueNumber = nextQueueItem ? nextQueueItem.nomor : "---";
-
-  const currentQueueItem = queueState.list.find(
-    (q) => q.status === "Sedang Diperiksa",
-  );
-  const currentQueueNumber = currentQueueItem ? currentQueueItem.nomor : "-";
 
   return (
     <div className="bg-white border border-slate-300 shadow-sm rounded-sm p-4 h-full flex flex-col md:flex-row gap-4">
@@ -124,11 +260,27 @@ const SRMAntrian = () => {
       <div className="w-full md:w-2/3 flex flex-col gap-4">
         {/* Controls */}
         <div className="border border-slate-300 rounded-sm p-4 bg-slate-50">
-          <div className="flex items-center gap-2 mb-4 border-b border-slate-200 pb-2">
-            <Settings className="w-4 h-4 text-slate-600" />
-            <h3 className="text-sm font-bold text-slate-700">
-              Kontrol Antrian
-            </h3>
+          <div className="flex items-center justify-between mb-4 border-b border-slate-200 pb-2">
+            <div className="flex items-center gap-2">
+              <Settings className="w-4 h-4 text-slate-600" />
+              <h3 className="text-sm font-bold text-slate-700">
+                Kontrol Antrian
+              </h3>
+            </div>
+            
+            {availableVoices.length > 0 && (
+              <select 
+                value={selectedVoiceURI} 
+                onChange={(e) => setSelectedVoiceURI(e.target.value)}
+                className="text-xs border border-slate-300 rounded px-2 py-1 text-slate-600 focus:outline-none focus:border-blue-500 max-w-[200px]"
+              >
+                {availableVoices.map(v => (
+                  <option key={v.voiceURI} value={v.voiceURI}>
+                    {v.name}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           <div className="flex gap-2 mb-4">
@@ -157,14 +309,14 @@ const SRMAntrian = () => {
 
           <div className="flex gap-2 mb-4">
             <button
-              onClick={callNextQueue}
+              onClick={handleCallNext}
               disabled={waitingCount === 0}
               className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white py-3 rounded text-sm font-bold flex items-center justify-center gap-2 shadow-sm uppercase tracking-wider"
             >
               <Megaphone className="w-5 h-5" /> Panggil Berikutnya
             </button>
             <button
-              onClick={callQueueAgain}
+              onClick={handleCallAgain}
               disabled={!currentQueueItem}
               className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-orange-300 text-white py-3 rounded text-sm font-bold flex items-center justify-center gap-2 shadow-sm uppercase tracking-wider"
             >
@@ -172,7 +324,7 @@ const SRMAntrian = () => {
             </button>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => currentQueueItem && skipQueue()}
               disabled={!currentQueueItem}
@@ -192,6 +344,12 @@ const SRMAntrian = () => {
             >
               {isSoundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               {isSoundEnabled ? 'Suara Aktif' : 'Suara Mati'}
+            </button>
+            <button
+              onClick={() => setIsFullscreenTV(true)}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium flex items-center gap-2 shadow-sm "
+            >
+              <MonitorPlay className="w-4 h-4" /> Buka Layar TV
             </button>
           </div>
         </div>
@@ -273,14 +431,31 @@ const SRMAntrian = () => {
                         </span>
                       </td>
                       <td className="px-3 py-2 text-center">
-                        {item.status === "Menunggu" && (
+                        <div className="flex items-center justify-center gap-2">
                           <button
-                            onClick={() => skipQueue()}
-                            className="text-xs text-red-600 hover:text-red-800 font-medium"
+                            onClick={() => printTicket(item)}
+                            title="Cetak Tiket"
+                            className="bg-slate-100 p-1.5 rounded hover:bg-slate-200 text-slate-700"
                           >
-                            Lewati
+                            <Printer className="w-4 h-4" />
                           </button>
-                        )}
+                          <button
+                            onClick={() => sendWA(item)}
+                            title="Kirim Notif WA"
+                            className="bg-green-100 p-1.5 rounded hover:bg-green-200 text-green-700"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                          </button>
+                          {item.status === "Menunggu" && (
+                            <button
+                              onClick={() => skipQueue()}
+                              className="bg-red-100 p-1.5 rounded hover:bg-red-200 text-red-700"
+                              title="Lewati"
+                            >
+                              <SkipForward className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))

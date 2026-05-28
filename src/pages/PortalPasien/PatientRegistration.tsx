@@ -1,27 +1,27 @@
-import React, { useState } from 'react';
-import { CalendarPlus, CheckCircle } from 'lucide-react';
-import { POLIKLINIK, DOKTER } from '../../data/mockData';
+import React, { useState } from "react";
+import { CalendarPlus, CheckCircle } from "lucide-react";
+import { POLIKLINIK, DOKTER } from "../../data/mockData";
 
 export default function PatientRegistration() {
-  const [poli, setPoli] = useState('');
-  const [dokter, setDokter] = useState('');
-  const [tanggal, setTanggal] = useState('');
+  const [poli, setPoli] = useState("");
+  const [dokter, setDokter] = useState("");
+  const [tanggal, setTanggal] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = new Date().toISOString().split("T")[0];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!poli || !dokter || !tanggal) {
-      setError('Semua field wajib diisi.');
+      setError("Semua field wajib diisi.");
       return;
     }
 
     if (tanggal < today) {
-      setError('Tanggal periksa tidak boleh di masa lalu.');
+      setError("Tanggal periksa tidak boleh di masa lalu.");
       return;
     }
 

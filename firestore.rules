@@ -1,0 +1,122 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == "kharizmubarok281105@gmail.com" ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function isAnonymous() {
+      return isAuthenticated() && request.auth.token.firebase.sign_in_provider == 'anonymous';
+    }
+
+    function isStaff() {
+      // For prototype purposes, all authenticated users (including anonymous) can act as staff
+      return isAuthenticated();
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    
+    function isValidPatient(data) {
+      return data.keys().hasAll(['id', 'nik', 'namaLengkap', 'pekerjaan', 'kotaLahir', 'tanggalLahir', 'jenisKelamin', 'statusPernikahan', 'riwayatAlergi', 'tanggalRegistrasi', 'jumlahKunjungan']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() < 50 &&
+             data.nik is string && data.nik.size() > 0 && data.nik.size() < 20 &&
+             data.namaLengkap is string && data.namaLengkap.size() > 0 && data.namaLengkap.size() < 100 &&
+             data.jenisKelamin in ['L', 'P'] &&
+             data.jumlahKunjungan is number && data.jumlahKunjungan >= 0;
+    }
+
+    function isValidDoctor(data) {
+      return data.keys().hasAll(['id', 'nama', 'spesialisasi']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() < 50 &&
+             data.nama is string && data.nama.size() > 0 && data.nama.size() < 100 &&
+             data.spesialisasi is string && data.spesialisasi.size() > 0 && data.spesialisasi.size() < 100;
+    }
+
+    function isValidQueueState(data) {
+      return data.keys().hasAll(['tanggal', 'currentNumber', 'nextNumber', 'totalHariIni', 'menunggu', 'selesai', 'list']) &&
+             data.tanggal is string &&
+             data.currentNumber is number && data.currentNumber >= 0 &&
+             data.nextNumber is number && data.nextNumber >= 0 &&
+             data.totalHariIni is number && data.totalHariIni >= 0 &&
+             data.menunggu is number && data.menunggu >= 0 &&
+             data.selesai is number && data.selesai >= 0 &&
+             data.list is list;
+    }
+
+    function isValidVisit(data) {
+      return data.keys().hasAll(['id', 'patientId', 'tanggalKunjungan', 'dokterId', 'operatorId', 'anamnesa', 'pemeriksaanFisik', 'pemeriksaanPenunjang', 'diagnosis', 'terapi', 'tindakan', 'status', 'totalBiaya']) &&
+             data.id is string && data.id.size() > 0 && data.id.size() < 50 &&
+             data.patientId is string && data.patientId.size() > 0 && data.patientId.size() < 50 &&
+             data.tanggalKunjungan is string &&
+             data.dokterId is string &&
+             data.operatorId is string &&
+             data.status in ['Menunggu', 'Diperiksa', 'Selesai'] &&
+             data.totalBiaya is number && data.totalBiaya >= 0;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /patients/{patientId} {
+      // Anyone authenticated (including anonymous) can read and create patients
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidPatient(request.resource.data);
+      // Only staff can update/delete patients
+      allow update: if isStaff() && isValidPatient(request.resource.data);
+      allow delete: if isStaff();
+    }
+
+    match /doctors/{doctorId} {
+      // Anyone authenticated can read doctors
+      allow read: if isAuthenticated();
+      // Only staff can write doctors (allow create for seeding)
+      allow create: if isAuthenticated() && isValidDoctor(request.resource.data);
+      allow update: if isStaff() && isValidDoctor(request.resource.data);
+      allow delete: if isStaff();
+    }
+
+    match /queues/{queueId} {
+      // Anyone authenticated can read and write queues (anonymous needs to add themselves)
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidQueueState(request.resource.data);
+      allow update: if isAuthenticated() && isValidQueueState(request.resource.data);
+      allow delete: if isStaff();
+    }
+
+    match /visits/{visitId} {
+      // Anyone authenticated can read and write visits (anonymous needs to create a visit)
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidVisit(request.resource.data);
+      allow update: if isStaff() && isValidVisit(request.resource.data);
+      allow delete: if isStaff();
+    }
+
+    match /operators/{operatorId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /settings/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+
+    match /master_data/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}

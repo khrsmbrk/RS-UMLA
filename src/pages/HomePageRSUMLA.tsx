@@ -33,10 +33,6 @@ const Hero = ({ lang }: { lang: Lang }) => {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 w-full">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-700 text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4 mr-2" />
-              {t(lang, 'Layanan Kesehatan Terpadu & Modern', 'Integrated & Modern Healthcare')}
-            </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-[1.1] whitespace-pre-line">
               {lang === 'ID' ? settings.heroTitleId : settings.heroTitleEn}
             </h1>
@@ -44,12 +40,12 @@ const Hero = ({ lang }: { lang: Lang }) => {
               {lang === 'ID' ? settings.heroSubtitleId : settings.heroSubtitleEn}
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link to="/portal/pendaftaran" className="group px-8 py-4 text-base font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-full shadow-[0_0_40px_rgba(52,211,153,0.3)] transition-all flex items-center">
+              <Link to="/pendaftaran-online" className="group px-8 py-4 text-base font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-full shadow-[0_0_40px_rgba(52,211,153,0.3)] transition-all flex items-center">
                 {t(lang, 'Pendaftaran Online', 'Online Registration')}
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/srm/dashboard" className="px-8 py-4 text-base font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 backdrop-blur-md rounded-full transition-all shadow-sm">
-                SIM RS UMLA
+              <Link to="/portal/pendaftaran" className="px-8 py-4 text-base font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 backdrop-blur-md rounded-full transition-all shadow-sm">
+                Portal Pasien
               </Link>
             </div>
           </div>

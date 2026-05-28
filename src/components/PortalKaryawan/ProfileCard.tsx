@@ -14,14 +14,16 @@ const ProfileCard = ({ employee }: { employee: any }) => {
           <Edit2 className="w-4 h-4" />
         </button>
       </div>
-      <div className="px-6 pb-6 relative">
-        <div className="w-20 h-20 bg-white rounded-full p-1 absolute -top-10 border border-slate-100 shadow-sm">
-          <div className="w-full h-full bg-blue-100 rounded-full flex items-center justify-center text-blue-700 text-2xl font-bold">
-            {employee.name.charAt(0)}
+      <div className="px-6 pb-6 w-full">
+        <div className="-mt-12 mb-4 relative z-10 w-24 h-24">
+          <div className="w-24 h-24 bg-white rounded-full p-1 border border-slate-100 shadow-sm">
+            <div className="w-full h-full bg-blue-100 rounded-full flex items-center justify-center text-blue-700 text-3xl font-bold">
+              {employee.name.charAt(0)}
+            </div>
           </div>
         </div>
         
-        <div className="mt-12">
+        <div>
           <h2 className="text-xl font-bold text-slate-800">{employee.name}</h2>
           <p className="text-sm text-blue-600 font-medium mb-4">{employee.jabatan} • {employee.unit}</p>
           

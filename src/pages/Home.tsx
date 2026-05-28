@@ -24,8 +24,6 @@ const Navbar = () => {
           </div>
           <div className="flex items-center space-x-2">
              <Link to="/portal/pendaftaran" className="hidden md:block text-xs font-semibold text-slate-600 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-slate-50">Portal Pasien</Link>
-             <Link to="/karyawan/login" className="hidden md:block text-xs font-semibold text-slate-600 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-slate-50">Portal Karyawan</Link>
-             <Link to="/smart-office" className="hidden md:block text-xs font-semibold text-slate-600 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-slate-50">SMART Office</Link>
              <Link to="/srm/dashboard" className="text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors shadow-sm">SIM RS UMLA</Link>
           </div>
         </div>
@@ -49,13 +47,13 @@ const Hero = () => {
         <Link to="/srm/dashboard" className="px-8 py-3.5 text-base font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg shadow-blue-200 transition-all hover:-translate-y-0.5">
           SIM RS UMLA
         </Link>
-        <Link to="/smart-office" className="px-8 py-3.5 text-base font-bold text-slate-700 bg-white border border-slate-200 hover:border-blue-200 hover:bg-blue-50 rounded-full shadow-sm transition-all">
-          SMART Office
+        <Link to="/pendaftaran-online" className="px-8 py-3.5 text-base font-bold text-slate-700 bg-white border border-slate-200 hover:border-blue-200 hover:bg-blue-50 rounded-full shadow-sm transition-all">
+          Pendaftaran Online
         </Link>
         <Link to="/portal/pendaftaran" className="px-8 py-3.5 text-base font-bold text-slate-700 bg-white border border-slate-200 hover:border-blue-200 hover:bg-blue-50 rounded-full shadow-sm transition-all">
           Portal Pasien
         </Link>
-        <Link to="/karyawan/login" className="px-8 py-3.5 text-base font-bold text-slate-700 bg-white border border-slate-200 hover:border-blue-200 hover:bg-blue-50 rounded-full shadow-sm transition-all">
+        <Link to="/office/login" className="px-8 py-3.5 text-base font-bold text-slate-700 bg-white border border-slate-200 hover:border-blue-200 hover:bg-blue-50 rounded-full shadow-sm transition-all">
           Portal Karyawan
         </Link>
       </div>
@@ -201,7 +199,7 @@ const AlurKlinik = () => {
             <div className="space-y-6">
               {checks.map((c, i) => (
                 <div key={i} className="flex items-start">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-500 mr-4 flex-shrink-0 mt-0.5" />
+                  <c.icon className="w-6 h-6 text-emerald-500 mr-4 flex-shrink-0 mt-0.5" />
                   <div>
                     <h4 className="text-base font-bold text-slate-800">{c.text}</h4>
                     <p className="text-sm text-slate-500 mt-1">{c.desc}</p>

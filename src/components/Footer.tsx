@@ -56,7 +56,7 @@ export const Footer = () => {
             <ul className="space-y-3 text-sm">
               <li><button onClick={() => alert(t(lang, 'Fitur masih dalam pengembangan', 'Feature is still under development'))} className="hover:text-emerald-600 transition-colors">{t(lang, 'Profil RS UMLA', 'RS UMLA Profile')}</button></li>
               <li><button onClick={() => alert(t(lang, 'Fitur masih dalam pengembangan', 'Feature is still under development'))} className="hover:text-emerald-600 transition-colors">{t(lang, 'Jadwal Dokter', 'Doctor Schedule')}</button></li>
-              <li><Link to="/portal/pendaftaran" className="hover:text-emerald-600 transition-colors">{t(lang, 'Pendaftaran Online', 'Online Registration')}</Link></li>
+              <li><Link to="/pendaftaran-online" className="hover:text-emerald-600 transition-colors">{t(lang, 'Pendaftaran Online', 'Online Registration')}</Link></li>
               <li><button onClick={() => alert(t(lang, 'Fitur masih dalam pengembangan', 'Feature is still under development'))} className="hover:text-emerald-600 transition-colors">{t(lang, 'Ketersediaan Kamar', 'Room Availability')}</button></li>
               <li><button onClick={() => alert(t(lang, 'Fitur masih dalam pengembangan', 'Feature is still under development'))} className="hover:text-emerald-600 transition-colors">{t(lang, 'Karir & Lowongan', 'Career & Vacancies')}</button></li>
             </ul>
@@ -82,7 +82,7 @@ export const Footer = () => {
           <div className="flex space-x-6 text-xs text-slate-500">
             <button onClick={() => alert(t(lang, 'Fitur masih dalam pengembangan', 'Feature is still under development'))} className="hover:text-slate-900 transition-colors">{t(lang, 'Kebijakan Privasi', 'Privacy Policy')}</button>
             <button onClick={() => alert(t(lang, 'Fitur masih dalam pengembangan', 'Feature is still under development'))} className="hover:text-slate-900 transition-colors">{t(lang, 'Syarat & Ketentuan', 'Terms & Conditions')}</button>
-            <button onClick={() => alert(t(lang, 'Fitur masih dalam pengembangan', 'Feature is still under development'))} className="hover:text-slate-900 transition-colors">{t(lang, 'Peta Situs', 'Sitemap')}</button>
+            <a href="https://maps.app.goo.gl/F2kLiKu9V3oR6PmaA" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors">{t(lang, 'Peta Lokasi', 'Maps')}</a>
           </div>
         </div>
       </div>

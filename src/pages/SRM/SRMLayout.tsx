@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   UserPlus, ClipboardList, LayoutDashboard, Users, Search, 
   FileText, MessageCircle, Syringe, BarChart2, Settings, XCircle,
   ChevronDown
 } from 'lucide-react';
+import { useSRMStore } from '../../store/srmStore';
 
 const SRMLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const { settings } = useSRMStore();
+
+  useEffect(() => {
+    document.title = settings.titleBar;
+  }, [settings.titleBar]);
+
+  const showVersion = () => {
+    const date = new Date();
+    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    alert(`Versi ${date.getFullYear()}.${months[date.getMonth()]}.${date.getDate()}\nBuilder by Kharizer`);
+  };
 
   const toggleMenu = (menu: string) => {
     if (activeMenu === menu) setActiveMenu(null);
@@ -36,12 +48,12 @@ const SRMLayout = () => {
     <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-sm" onClick={() => activeMenu && closeMenu()}>
       {/* Top Menu Bar */}
       <div className="bg-slate-50 border-b border-slate-300 flex items-center px-2 py-1 text-xs">
-        <button 
+        <Link 
+          to="/srm/wa-reminder"
           className="px-3 py-1 hover:bg-blue-100 rounded"
-          onClick={() => alert('Fitur Reminder masih dalam pengembangan')}
         >
           Reminder
-        </button>
+        </Link>
         
         <div className="relative">
           <button 
@@ -91,90 +103,45 @@ const SRMLayout = () => {
           {activeMenu === 'master' && (
             <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-slate-300 shadow-lg z-50 py-1">
               <Link to="/srm/pasien" className="block px-4 py-1.5 hover:bg-blue-100">Pasien</Link>
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Pemeriksaan Fisik masih dalam pengembangan')}
-              >
-                Pemeriksaan Fisik
-              </button>
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Pemeriksaan Penunjang masih dalam pengembangan')}
-              >
-                Pemeriksaan Penunjang
-              </button>
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Diagnosis masih dalam pengembangan')}
-              >
-                Diagnosis
-              </button>
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Terapi masih dalam pengembangan')}
-              >
-                Terapi
-              </button>
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Tindakan masih dalam pengembangan')}
-              >
-                Tindakan
-              </button>
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Obat masih dalam pengembangan')}
-              >
-                Obat
-              </button>
+              <Link to="/srm/master/pemeriksaan-fisik" className="block px-4 py-1.5 hover:bg-blue-100">Pemeriksaan Fisik</Link>
+              <Link to="/srm/master/pemeriksaan-penunjang" className="block px-4 py-1.5 hover:bg-blue-100">Pemeriksaan Penunjang</Link>
+              <Link to="/srm/master/diagnosis" className="block px-4 py-1.5 hover:bg-blue-100">Diagnosis</Link>
+              <Link to="/srm/master/terapi" className="block px-4 py-1.5 hover:bg-blue-100">Terapi</Link>
+              <Link to="/srm/master/tindakan" className="block px-4 py-1.5 hover:bg-blue-100">Tindakan</Link>
+              <Link to="/srm/master/obat" className="block px-4 py-1.5 hover:bg-blue-100">Obat</Link>
               <hr className="my-1 border-slate-200" />
               <Link to="/srm/pengaturan" className="block px-4 py-1.5 hover:bg-blue-100">Pengaturan</Link>
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Printer masih dalam pengembangan')}
-              >
-                Printer
-              </button>
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Backup Database masih dalam pengembangan')}
-              >
-                Backup Database
-              </button>
+              <Link to="/srm/pengaturan" className="block px-4 py-1.5 hover:bg-blue-100">Printer</Link>
+              <Link to="/srm/pengaturan" className="block px-4 py-1.5 hover:bg-blue-100">Backup Database</Link>
               <hr className="my-1 border-slate-200" />
               <button 
                 className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('SIM RS UMLA v1.0.0')}
+                onClick={showVersion}
               >
                 About
               </button>
               <hr className="my-1 border-slate-200" />
-              <button 
-                className="block w-full text-left px-4 py-1.5 hover:bg-blue-100"
-                onClick={() => alert('Fitur Template Diagnosis masih dalam pengembangan')}
-              >
-                Template Diagnosis
-              </button>
+              <Link to="/srm/master/template-diagnosis" className="block px-4 py-1.5 hover:bg-blue-100">Template Diagnosis</Link>
               <Link to="/srm/jadwal-dokter" className="block px-4 py-1.5 hover:bg-blue-100">Jadwal Dokter</Link>
             </div>
           )}
         </div>
 
-        <button 
+        <Link 
+          to="/srm/password"
           className="px-3 py-1 hover:bg-blue-100 rounded"
-          onClick={() => alert('Fitur Password masih dalam pengembangan')}
         >
           Password
-        </button>
-        <button 
+        </Link>
+        <Link 
+          to="/srm/register"
           className="px-3 py-1 hover:bg-blue-100 rounded"
-          onClick={() => alert('Fitur Register masih dalam pengembangan')}
         >
           Register
-        </button>
+        </Link>
         <button 
           className="px-3 py-1 hover:bg-blue-100 rounded text-slate-400"
-          onClick={() => alert('SIM RS UMLA v1.0.0')}
+          onClick={showVersion}
         >
           Versi
         </button>

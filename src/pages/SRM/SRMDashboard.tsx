@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Users, Calendar, CalendarDays, DollarSign, Wallet, ClipboardList, RefreshCw, BarChart } from 'lucide-react';
 import { useSRMStore } from '../../store/srmStore';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const SRMDashboard = () => {
   const patients = useSRMStore((state) => state.patients);
@@ -23,6 +24,40 @@ const SRMDashboard = () => {
   const formatRupiah = (amount: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
   };
+
+  // Generate chart data for the last 7 days
+  const chartData = useMemo(() => {
+    const data = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const dayVisits = visits.filter(v => v.tanggalKunjungan.startsWith(dateStr));
+      const dayRevenue = dayVisits.reduce((sum, v) => sum + (v.totalBiaya || 0), 0);
+      
+      data.push({
+        name: `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}`,
+        kunjungan: dayVisits.length,
+        pendapatan: dayRevenue / 1000, // in thousands
+      });
+    }
+    return data;
+  }, [visits]);
+
+  const doctors = useSRMStore(state => state.doctors);
+
+  const poliData = useMemo(() => {
+    const counts: Record<string, number> = {};
+    visits.forEach(v => {
+      const doctor = doctors.find(d => d.id === v.dokterId);
+      const sp = doctor ? doctor.spesialisasi : 'Umum';
+      counts[sp] = (counts[sp] || 0) + 1;
+    });
+    
+    return Object.entries(counts).map(([name, value]) => ({ name, value }));
+  }, [visits, doctors]);
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#ffc658'];
 
   return (
     <div className="bg-white border border-slate-300 shadow-sm rounded-sm p-4 h-full flex flex-col overflow-y-auto">
@@ -111,30 +146,69 @@ const SRMDashboard = () => {
         </div>
       </div>
 
-      {/* Charts Area (Placeholders) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 flex-1 min-h-[200px]">
+      {/* Charts Area */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 flex-1 min-h-[250px]">
         <div className="border border-slate-300 rounded-sm p-4 flex flex-col">
           <h3 className="text-sm font-bold text-slate-700 mb-4">Kunjungan 7 Hari Terakhir</h3>
-          <div className="flex-1 border-b border-l border-slate-300 flex items-end justify-between px-2 pb-1 relative">
-             {/* Fake chart bars */}
-             {[10, 25, 15, 40, 30, 20, visitsToday.length * 10].map((val, i) => (
-                <div key={i} className="flex flex-col items-center w-8">
-                  <div className="w-full bg-blue-400 rounded-t-sm" style={{height: `${val}px`}}></div>
-                  <span className="text-[10px] text-slate-500 mt-1">{`0${i+7}/12`}</span>
-                </div>
-             ))}
+          <div className="flex-1 min-h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <RechartsBarChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                <Tooltip 
+                  cursor={{ fill: '#f1f5f9' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                />
+                <Bar dataKey="kunjungan" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              </RechartsBarChart>
+            </ResponsiveContainer>
           </div>
         </div>
         <div className="border border-slate-300 rounded-sm p-4 flex flex-col">
           <h3 className="text-sm font-bold text-slate-700 mb-4">Pendapatan 7 Hari Terakhir (Ribu)</h3>
-          <div className="flex-1 border-b border-l border-slate-300 flex items-end justify-between px-2 pb-1 relative">
-             {/* Fake chart bars */}
-             {[15, 30, 20, 50, 40, 25, (pendapatanHariIni / 10000) || 5].map((val, i) => (
-                <div key={i} className="flex flex-col items-center w-8">
-                  <div className="w-full bg-green-400 rounded-t-sm" style={{height: `${val}px`}}></div>
-                  <span className="text-[10px] text-slate-500 mt-1">{`0${i+7}/12`}</span>
-                </div>
-             ))}
+          <div className="flex-1 min-h-[200px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <RechartsBarChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+                <Tooltip 
+                  cursor={{ fill: '#f1f5f9' }}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  formatter={(value: number) => [`Rp ${value.toLocaleString('id-ID')} Ribu`, 'Pendapatan']}
+                />
+                <Bar dataKey="pendapatan" fill="#22c55e" radius={[4, 4, 0, 0]} />
+              </RechartsBarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+        <div className="border border-slate-300 rounded-sm p-4 flex flex-col">
+          <h3 className="text-sm font-bold text-slate-700 mb-4">Distribusi Pasien per Poli</h3>
+          <div className="flex-1 min-h-[200px] flex items-center justify-center">
+            {poliData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={poliData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {poliData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(value: number) => [value, 'Pasien']} />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+             ) : (
+                <p className="text-slate-400 italic text-sm">Belum ada kunjungan</p>
+             )}
           </div>
         </div>
       </div>

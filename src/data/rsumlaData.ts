@@ -6,14 +6,14 @@ import {
 import { Lang, t } from '../utils/translations';
 
 export const quickAccess = (lang: Lang) => [
-  { id: 1, title: t(lang, 'Pendaftaran Online', 'Online Registration'), desc: t(lang, 'Daftar periksa tanpa antri', 'Register without queuing'), icon: Stethoscope, link: '/portal/pendaftaran' },
+  { id: 1, title: t(lang, 'Pendaftaran Online', 'Online Registration'), desc: t(lang, 'Daftar periksa tanpa antri', 'Register without queuing'), icon: Stethoscope, link: '/pendaftaran-online' },
   { id: 2, title: t(lang, 'Kamar Rawat Inap', 'Inpatient Rooms'), desc: t(lang, 'Cek ketersediaan bed', 'Check bed availability'), icon: BedDouble, link: '#' },
   { id: 3, title: t(lang, 'Hasil Penunjang', 'Medical Results'), desc: t(lang, 'Laboratorium & Radiologi', 'Laboratory & Radiology'), icon: FileText, link: '#' },
-  { id: 4, title: t(lang, 'Daftar Dokter', 'Doctor Directory'), desc: t(lang, 'Jadwal & profil dokter', 'Schedule & doctor profile'), icon: Users, link: '/srm/jadwal-dokter' },
+  { id: 4, title: t(lang, 'Daftar Dokter', 'Doctor Directory'), desc: t(lang, 'Jadwal & profil dokter', 'Schedule & doctor profile'), icon: Users, link: '/jadwal-dokter' },
   { id: 5, title: t(lang, 'Tarif & Kerja Sama', 'Rates & Partnerships'), desc: t(lang, 'Informasi biaya & asuransi', 'Cost & insurance info'), icon: CreditCard, link: '#' },
   { id: 6, title: t(lang, 'Standar Pelayanan', 'Service Standards'), desc: t(lang, 'Maklumat & standar layanan', 'Declarations & service standards'), icon: ClipboardCheck, link: '#' },
   { id: 7, title: t(lang, 'Pengaduan Layanan', 'Service Complaints'), desc: t(lang, 'Sampaikan keluhan Anda', 'Submit your complaints'), icon: MessageSquareWarning, link: '#' },
-  { id: 8, title: t(lang, 'Permohonan Informasi', 'Information Request'), desc: t(lang, 'PPID & Keberatan', 'PPID & Objections'), icon: Info, link: '#' },
+  { id: 8, title: t(lang, 'Permohonan Informasi', 'Information Request'), desc: t(lang, 'PPID & Keberatan', 'PPID & Objections'), icon: Info, link: '/ppid' },
   { id: 9, title: t(lang, 'PROMs & PREMs', 'PROMs & PREMs'), desc: t(lang, 'Survei kepuasan pasien', 'Patient satisfaction survey'), icon: Activity, link: '#' },
 ];
 
