@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, Save, XCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import toast from 'react-hot-toast';
 
 export default function SRMPassword() {
@@ -26,7 +26,7 @@ export default function SRMPassword() {
         <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
           <Lock className="w-5 h-5 text-blue-600" /> Ubah Password
         </h1>
-        <button onClick={() => navigate('/srm')} className="text-slate-400 hover:text-red-500">
+        <button onClick={() => navigate({ to: '/srm' })} className="text-slate-400 hover:text-red-500">
           <XCircle className="w-5 h-5" />
         </button>
       </div>

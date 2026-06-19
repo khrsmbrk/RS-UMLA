@@ -1,6 +1,6 @@
 import { secureLocalStorage } from "../../utils/crypto";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import { EMPLOYEES } from "../../data/portalData";
 import { ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
@@ -18,7 +18,7 @@ const LoginPage = () => {
     const employee = EMPLOYEES.find((e) => e.id === empId);
     if (employee) {
       secureLocalStorage.setItem("karyawan_session", JSON.stringify(employee));
-      navigate("/karyawan/dashboard");
+      navigate({ to: "/karyawan/dashboard" });
     } else {
       toast.error("ID Karyawan atau Kata Sandi salah.");
     }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Package, Search, PlusCircle, ArrowDownCircle, ArrowUpCircle, Filter, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 
 export default function SRMLogistik() {
   const navigate = useNavigate();
@@ -135,7 +135,7 @@ export default function SRMLogistik() {
 
       {/* Floating Back Button */}
       <div className="absolute bottom-4 left-4 flex gap-2">
-         <button onClick={() => navigate('/srm')} className="bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded text-sm font-bold flex items-center gap-2 shadow-lg hover:bg-slate-50">
+         <button onClick={() => navigate({ to: '/srm' })} className="bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded text-sm font-bold flex items-center gap-2 shadow-lg hover:bg-slate-50">
            <XCircle className="w-4 h-4 text-red-600" /> KELUAR MODUL
          </button>
       </div>

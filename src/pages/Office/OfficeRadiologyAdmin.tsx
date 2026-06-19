@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import {
   Layers,
   Search,
@@ -78,7 +78,7 @@ export default function OfficeRadiologyAdmin() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => navigate("/srm/radiologi")}
+            onClick={() => navigate({ to: "/srm/radiologi" })}
             className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors"
           >
             <Database className="w-4 h-4 text-indigo-100" /> Open SRM Radiologi

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from '@tanstack/react-router';
 import {
   Plus,
   Edit,
@@ -144,7 +144,7 @@ export default function SRMDataMaster() {
             />
           </div>
           <button
-            onClick={() => navigate("/srm")}
+            onClick={() => navigate({ to: "/srm" })}
             className="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-red-600 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1 shadow-sm"
           >
             <XCircle className="w-4 h-4" /> KELUAR

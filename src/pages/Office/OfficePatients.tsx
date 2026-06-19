@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import {
   Search,
   Filter,
@@ -60,13 +60,13 @@ export default function OfficePatients() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => navigate("/srm/pasien")}
+            onClick={() => navigate({ to: "/srm/pasien" })}
             className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 shadow-sm border border-slate-200/60 hover:bg-slate-50 transition-colors"
           >
             <Database className="w-4 h-4 text-emerald-600" /> Open in SRM
           </button>
           <button
-            onClick={() => navigate("/srm/pasien")}
+            onClick={() => navigate({ to: "/srm/pasien" })}
             className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors"
           >
             <UserPlus className="w-4 h-4" /> New Patient
@@ -286,7 +286,7 @@ export default function OfficePatients() {
                     </td>
                     <td className="py-4 px-4 text-center">
                       <button
-                        onClick={() => navigate("/srm/pasien")}
+                        onClick={() => navigate({ to: "/srm/pasien" })}
                         className="p-2 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-teal-600 hover:border-teal-200 hover:bg-teal-50 mx-auto transition-all shadow-sm"
                         title="View Profile"
                       >

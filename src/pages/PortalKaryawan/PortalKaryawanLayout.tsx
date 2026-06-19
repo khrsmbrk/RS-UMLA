@@ -16,7 +16,7 @@ import {
   TrendingUp,
   Award,
 } from "lucide-react";
-import { useNavigate, useLocation, Link, Outlet } from "react-router-dom";
+import { useNavigate, useLocation, Link, Outlet } from '@tanstack/react-router';
 
 const PortalKaryawanLayout = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const PortalKaryawanLayout = () => {
   useEffect(() => {
     const session = secureLocalStorage.getItem("karyawan_session");
     if (!session) {
-      navigate("/office/login");
+      navigate({ to: "/office/login" });
     } else {
       setUser(JSON.parse(session));
     }
@@ -37,7 +37,7 @@ const PortalKaryawanLayout = () => {
 
   const handleLogout = () => {
     secureLocalStorage.removeItem("karyawan_session");
-    navigate("/office/login");
+    navigate({ to: "/office/login" });
   };
 
   const navItems = [
@@ -161,7 +161,7 @@ const PortalKaryawanLayout = () => {
 
         <main className="flex-1 overflow-auto bg-slate-50/50 p-5 lg:p-8 scroll-smooth">
           <div className="mx-auto max-w-7xl">
-            <Outlet context={{ user }} />
+            <KaryawanContext.Provider value={{ user }}><Outlet /></KaryawanContext.Provider>
           </div>
         </main>
       </div>

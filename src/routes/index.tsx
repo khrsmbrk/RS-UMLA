@@ -1,0 +1,1 @@
+import { createFileRoute } from '@tanstack/react-router';\nimport React from 'react';\n// This path will need adjustment in reality. We create a generic proxy.\nexport const Route = createFileRoute('/')({\n  component: () => <div>Imported: HomePageRSUMLA</div>\n});\n

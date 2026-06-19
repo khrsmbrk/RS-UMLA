@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import { UserPlus, Edit, Trash2, Save, XCircle, FolderOpen, X } from 'lucide-react';
 import { useSRMStore, Operator } from '../../store/srmStore';
 import toast from 'react-hot-toast';
@@ -324,7 +324,7 @@ const SRMPengaturan = () => {
         </button>
         <button 
           className="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-red-600 px-4 py-2 rounded text-sm font-bold flex items-center gap-2 shadow-sm"
-          onClick={() => navigate('/srm')}
+          onClick={() => navigate({ to: '/srm' })}
         >
           <XCircle className="w-4 h-4" /> Keluar
         </button>

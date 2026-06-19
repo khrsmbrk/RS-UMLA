@@ -7,7 +7,7 @@ import {
   ChevronRight,
   Stethoscope,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link } from '@tanstack/react-router';
 import { useSiteStore } from "../store/siteStore";
 import { useLangStore } from "../store/langStore";
 import { t } from "../utils/translations";

@@ -1,3 +1,4 @@
+import { useOutletContext } from '../../utils/OutletContext';
 import React, { useState } from "react";
 import { secureLocalStorage } from "../../utils/crypto";
 import {
@@ -13,7 +14,7 @@ import {
   Activity,
 } from "lucide-react";
 import { POLIKLINIK, DOKTER } from "../../data/mockData";
-import { useOutletContext, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from '@tanstack/react-router';
 import { useSRMStore } from "../../store/srmStore";
 
 const FloatingInput = ({
@@ -277,7 +278,7 @@ export default function PatientRegistration() {
 
           <button
             onClick={() => {
-              navigate("/pasien/dashboard");
+              navigate({ to: "/pasien/dashboard" });
             }}
             className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg text-sm font-semibold transition"
           >

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import {
   Search,
   Save,
@@ -362,7 +362,7 @@ const SRMRekamMedis = () => {
           <span className="text-sm text-slate-500">atau</span>
           <button
             className="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 px-4 py-1.5 rounded text-sm font-medium flex items-center gap-2 shadow-sm"
-            onClick={() => navigate("/srm/pasien")}
+            onClick={() => navigate({ to: "/srm/pasien" })}
           >
             <FilePlus className="w-4 h-4" /> Pendaftaran Pasien Baru
           </button>
@@ -812,7 +812,7 @@ const SRMRekamMedis = () => {
             className="flex-1 border border-slate-300 rounded px-2 py-1 text-xs focus:outline-none focus:border-blue-500"
           />
           <button
-            onClick={() => navigate("/srm")}
+            onClick={() => navigate({ to: "/srm" })}
             className="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-red-600 px-3 py-1 rounded text-xs font-bold flex items-center gap-1 shadow-sm ml-auto"
           >
             <XCircle className="w-3 h-3" /> KELUAR

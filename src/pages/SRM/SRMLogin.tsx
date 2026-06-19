@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from '@tanstack/react-router';
 import { Eye, EyeOff, Activity, ArrowLeft, Users } from "lucide-react";
 import { useSiteStore } from "../../store/siteStore";
 import { useSRMStore } from "../../store/srmStore";
@@ -29,7 +29,7 @@ export default function SRMLogin() {
     
     if (validOperator) {
       // Login successful
-      navigate("/srm/dashboard");
+      navigate({ to: "/srm/dashboard" });
     } else {
       setError("Username/NIP atau Kata Sandi salah.");
     }

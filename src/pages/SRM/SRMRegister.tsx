@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserPlus, Save, XCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import toast from 'react-hot-toast';
 
 export default function SRMRegister() {
@@ -23,7 +23,7 @@ export default function SRMRegister() {
         <h1 className="text-xl font-bold text-slate-800 flex items-center gap-2">
           <UserPlus className="w-5 h-5 text-blue-600" /> Register User Baru
         </h1>
-        <button onClick={() => navigate('/srm')} className="text-slate-400 hover:text-red-500">
+        <button onClick={() => navigate({ to: '/srm' })} className="text-slate-400 hover:text-red-500">
           <XCircle className="w-5 h-5" />
         </button>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, Link, useLocation, useNavigate } from '@tanstack/react-router';
 import { 
   UserPlus, ClipboardList, LayoutDashboard, Users, Search, 
   FileText, MessageCircle, Syringe, BarChart2, Settings, XCircle,

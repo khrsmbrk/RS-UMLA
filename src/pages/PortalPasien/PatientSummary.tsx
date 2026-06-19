@@ -1,6 +1,7 @@
+import { useOutletContext } from '../../utils/OutletContext';
 import { secureLocalStorage } from "../../utils/crypto";
 import React, { useMemo, useState } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import { DUMMY_VISITS } from "../../data/mockData";
 import { useSRMStore } from "../../store/srmStore";
 import toast from "react-hot-toast";
@@ -292,7 +293,7 @@ export default function PatientSummary() {
               Kunjungan
             </h3>
             <button
-              onClick={() => navigate("/pasien/rme")}
+              onClick={() => navigate({ to: "/pasien/rme" })}
               className="text-xs font-bold text-blue-600 flex items-center hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
             >
               Riwayat Lengkap <ChevronRight className="w-3.5 h-3.5 ml-0.5" />

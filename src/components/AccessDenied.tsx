@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import { ShieldAlert } from "lucide-react";
 
 const AccessDenied = ({ title }: { title: string }) => {

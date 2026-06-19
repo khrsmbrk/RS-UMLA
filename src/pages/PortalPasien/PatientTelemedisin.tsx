@@ -1,6 +1,7 @@
+import { useOutletContext } from '../../utils/OutletContext';
 import { secureLocalStorage } from "../../utils/crypto";
 import React, { useState, useMemo } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import { useSRMStore } from "../../store/srmStore";
 import {
   Video,

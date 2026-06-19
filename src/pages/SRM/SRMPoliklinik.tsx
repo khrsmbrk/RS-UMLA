@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Stethoscope, Search, FileText, CheckCircle, Activity, ClipboardList, Edit, XCircle } from 'lucide-react';
 import { useSRMStore } from '../../store/srmStore';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 
 export default function SRMPoliklinik() {
   const navigate = useNavigate();
@@ -230,7 +230,7 @@ export default function SRMPoliklinik() {
 
       {/* Floating Back Button */}
       <div className="absolute top-4 right-4 z-50">
-         <button onClick={() => navigate('/srm')} className="bg-slate-800 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 shadow-lg hover:bg-slate-700 transition-transform hover:scale-105">
+         <button onClick={() => navigate({ to: '/srm' })} className="bg-slate-800 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 shadow-lg hover:bg-slate-700 transition-transform hover:scale-105">
            <XCircle className="w-3.5 h-3.5" /> Tutup EMR Modul
          </button>
       </div>

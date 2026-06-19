@@ -1,6 +1,6 @@
 import { secureLocalStorage } from "../../utils/crypto";
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
+import { Outlet, useNavigate, useLocation, Link } from '@tanstack/react-router';
 
 export default function PatientLayout() {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function PatientLayout() {
   useEffect(() => {
     const session = secureLocalStorage.getItem("patient_session");
     if (!session) {
-      navigate("/pasien/login");
+      navigate({ to: "/pasien/login" });
     } else {
       const parsed = JSON.parse(session);
       if (parsed.mrn && parsed.mrn.startsWith("RSUML-")) {
@@ -35,12 +35,12 @@ export default function PatientLayout() {
   const activeTab = location.pathname.split("/").pop() || "dashboard";
 
   const handleTabChange = (tabId: string) => {
-    navigate(`/pasien/${tabId}`);
+    navigate({ to: `/pasien/${tabId}` });
   };
 
   const handleLogout = () => {
     secureLocalStorage.removeItem("patient_session");
-    navigate("/pasien/login");
+    navigate({ to: "/pasien/login" });
   };
 
   const tabs = [
@@ -219,7 +219,7 @@ export default function PatientLayout() {
             </div>
 
             <div className="px-4 py-6 md:p-8 min-h-[400px]">
-              <Outlet context={{ patient }} />
+              <PatientContext.Provider value={{ patient }}><Outlet /></PatientContext.Provider>
             </div>
           </div>
         </div>

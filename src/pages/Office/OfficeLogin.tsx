@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { secureLocalStorage } from "../../utils/crypto";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import {
   Building2,
   Users,
@@ -174,7 +174,7 @@ export default function OfficeLogin() {
           if (!parsedEmp)
             parsedEmp = EMPLOYEES.find((x) => x.roleId === assignedRole);
           login(assignedRole, parsedEmp);
-          navigate("/office/dashboard");
+          navigate({ to: "/office/dashboard" });
         }
       } catch (err: any) {
         console.error("Login failed:", err);
@@ -187,7 +187,7 @@ export default function OfficeLogin() {
       if (!parsedEmp)
         parsedEmp = EMPLOYEES.find((x) => x.roleId === assignedRole);
       login(assignedRole, parsedEmp);
-      navigate("/office/dashboard");
+      navigate({ to: "/office/dashboard" });
     }
   };
 
@@ -198,7 +198,7 @@ export default function OfficeLogin() {
     const employee = EMPLOYEES.find((e) => e.id === empId);
     if (employee) {
       secureLocalStorage.setItem("karyawan_session", JSON.stringify(employee));
-      navigate("/karyawan/dashboard");
+      navigate({ to: "/karyawan/dashboard" });
     } else {
       toast.error("ID Karyawan atau Kata Sandi salah.");
     }
@@ -208,7 +208,7 @@ export default function OfficeLogin() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
       <div className="absolute top-6 left-6">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate({ to: "/" })}
           className="flex items-center text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

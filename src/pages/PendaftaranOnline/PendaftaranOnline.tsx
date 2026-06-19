@@ -1,6 +1,6 @@
 import { secureLocalStorage } from "../../utils/crypto";
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from '@tanstack/react-router';
 import {
   CalendarPlus,
   CheckCircle,

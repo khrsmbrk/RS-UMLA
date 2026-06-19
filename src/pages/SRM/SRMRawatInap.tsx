@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BedDouble, Search, Thermometer, UserCheck, Activity, Pill, XCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 
 export default function SRMRawatInap() {
   const navigate = useNavigate();

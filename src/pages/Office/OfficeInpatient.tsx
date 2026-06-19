@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import {
   BedDouble,
   Search,
@@ -92,7 +92,7 @@ export default function OfficeInpatient() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => navigate("/srm/rawat-inap")}
+            onClick={() => navigate({ to: "/srm/rawat-inap" })}
             className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors"
           >
             <Database className="w-4 h-4 text-teal-100" /> Open in SRM
@@ -281,7 +281,7 @@ export default function OfficeInpatient() {
                   </td>
                   <td className="py-4 px-4 text-center">
                     <button
-                      onClick={() => navigate("/srm/rawat-inap")}
+                      onClick={() => navigate({ to: "/srm/rawat-inap" })}
                       className="text-xs font-bold text-teal-600 hover:text-teal-700 border border-teal-200 bg-teal-50 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
                     >
                       Process in SRM

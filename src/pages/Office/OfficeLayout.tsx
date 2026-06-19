@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, Link, useLocation } from '@tanstack/react-router';
 import { useOfficeStore } from "./store/officeStore";
 import { logout as authLogout } from "./store/auth";
 import {
@@ -29,7 +29,7 @@ export default function OfficeLayout() {
 
   useEffect(() => {
     if (!userRole) {
-      navigate("/office/login");
+      navigate({ to: "/office/login" });
     }
   }, [userRole, navigate]);
 
@@ -38,7 +38,7 @@ export default function OfficeLayout() {
   const handleLogout = async () => {
     await authLogout();
     logout();
-    navigate("/office/login");
+    navigate({ to: "/office/login" });
   };
 
   const menuGroups = {
@@ -219,7 +219,7 @@ export default function OfficeLayout() {
       const allowedPaths = navItems.map((item) => item.path);
       const isAllowed = allowedPaths.some((p) => location.pathname.startsWith(p));
       if (!isAllowed) {
-        navigate("/office/access-denied");
+        navigate({ to: "/office/access-denied" });
       }
     }
   }, [location.pathname, userRole, navigate, navItems]);

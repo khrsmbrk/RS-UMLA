@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import {
   Search,
   Plus,
@@ -61,13 +61,13 @@ export default function OfficeDoctors() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => navigate("/srm/jadwal-dokter")}
+            onClick={() => navigate({ to: "/srm/jadwal-dokter" })}
             className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 shadow-sm border border-slate-200/60 hover:bg-slate-50 transition-colors"
           >
             <Database className="w-4 h-4 text-emerald-600" /> Open in SRM
           </button>
           <button
-            onClick={() => navigate("/srm/jadwal-dokter")}
+            onClick={() => navigate({ to: "/srm/jadwal-dokter" })}
             className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors"
           >
             <Plus className="w-4 h-4" /> Add Member

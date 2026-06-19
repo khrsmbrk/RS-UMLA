@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import {
   Pill,
   Search,
@@ -72,7 +72,7 @@ export default function OfficePharmacyAdmin() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => navigate("/srm/apotek")}
+            onClick={() => navigate({ to: "/srm/apotek" })}
             className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors"
           >
             <Database className="w-4 h-4 text-indigo-100" /> Open SRM Apotek
@@ -247,7 +247,7 @@ export default function OfficePharmacyAdmin() {
                   </td>
                   <td className="py-4 px-4 text-center">
                     <button
-                      onClick={() => navigate("/srm/apotek")}
+                      onClick={() => navigate({ to: "/srm/apotek" })}
                       className="text-xs font-bold text-indigo-600 hover:text-indigo-700 border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
                     >
                       View in SRM

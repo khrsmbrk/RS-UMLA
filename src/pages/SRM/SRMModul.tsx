@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from '@tanstack/react-router';
 import {
   Activity,
   Microscope,
@@ -385,7 +385,7 @@ export default function SRMModul() {
       <div className="mt-4 flex justify-between items-center text-xs text-slate-500">
         <p>Total Data: {filteredData.length} records</p>
         <button
-          onClick={() => navigate("/srm")}
+          onClick={() => navigate({ to: "/srm" })}
           className="bg-slate-100 hover:bg-slate-200 border border-slate-300 p-2 rounded text-slate-600 flex items-center gap-2"
         >
           <X className="w-4 h-4" /> Kembali ke Dashboard

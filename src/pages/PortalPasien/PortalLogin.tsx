@@ -1,6 +1,6 @@
 import { secureLocalStorage } from "../../utils/crypto";
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from '@tanstack/react-router';
 import { DUMMY_PATIENT } from "../../data/mockData";
 import {
   Eye,
@@ -145,7 +145,7 @@ export default function PortalLogin() {
         "patient_session",
         JSON.stringify(sessionPatient),
       );
-      navigate("/pasien/dashboard");
+      navigate({ to: "/pasien/dashboard" });
       return;
     }
 
@@ -154,7 +154,7 @@ export default function PortalLogin() {
       "patient_session",
       JSON.stringify(DUMMY_PATIENT),
     );
-    navigate("/pasien/dashboard");
+    navigate({ to: "/pasien/dashboard" });
   };
 
   return (

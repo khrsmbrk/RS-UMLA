@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
 import { Plus, Edit, Trash2, FileSpreadsheet, XCircle, X } from 'lucide-react';
 import { useSRMStore, Patient } from '../../store/srmStore';
 import toast from 'react-hot-toast';
@@ -225,7 +225,7 @@ const SRMPasien = () => {
 
         <button 
           className="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-red-600 px-4 py-1.5 rounded text-sm font-bold flex items-center gap-2 shadow-sm ml-auto"
-          onClick={() => navigate('/srm')}
+          onClick={() => navigate({ to: '/srm' })}
         >
           <XCircle className="w-4 h-4" /> KELUAR
         </button>

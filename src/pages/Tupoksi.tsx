@@ -11,7 +11,7 @@ import {
   ChevronRight,
   Home,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link } from '@tanstack/react-router';
 
 export default function Tupoksi() {
   const { lang } = useLangStore();

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import {
   FlaskConical,
   Droplet,
@@ -80,7 +80,7 @@ export default function OfficeLabAdmin() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => navigate("/srm/laboratorium")}
+            onClick={() => navigate({ to: "/srm/laboratorium" })}
             className="flex items-center gap-2 bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors"
           >
             <Database className="w-4 h-4 text-fuchsia-100" /> Open SRM
@@ -246,7 +246,7 @@ export default function OfficeLabAdmin() {
                   </td>
                   <td className="py-4 px-4 text-center">
                     <button
-                      onClick={() => navigate("/srm/laboratorium")}
+                      onClick={() => navigate({ to: "/srm/laboratorium" })}
                       className="text-xs font-bold text-fuchsia-600 hover:text-fuchsia-700 border border-fuchsia-200 bg-fuchsia-50 hover:bg-fuchsia-100 px-3 py-1.5 rounded-lg transition-colors"
                     >
                       Process

@@ -4,7 +4,7 @@ import { t } from "../utils/translations";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { Target, Flag, Star, Heart, ChevronRight, Home } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link } from '@tanstack/react-router';
 
 export default function VisiMisi() {
   const { lang } = useLangStore();

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from '@tanstack/react-router';
 import { useOfficeStore } from "./store/officeStore";
 import { useSRMStore } from "../../store/srmStore";
 import {
@@ -154,13 +154,13 @@ export default function OfficeDashboard() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => navigate("/pendaftaran-online")}
+            onClick={() => navigate({ to: "/pendaftaran-online" })}
             className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-xl text-sm font-bold text-slate-600 shadow-sm border border-slate-200/60 hover:bg-slate-50 transition-colors"
           >
             <Monitor className="w-4 h-4 text-emerald-600" /> Pendaftaran Online
           </button>
           <button
-            onClick={() => navigate("/srm")}
+            onClick={() => navigate({ to: "/srm" })}
             className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors"
           >
             <Database className="w-4 h-4 text-teal-100" /> SIMRS / SRM System
@@ -293,7 +293,7 @@ export default function OfficeDashboard() {
                 Recent Patient Visits (SRM)
               </h2>
               <button
-                onClick={() => navigate("/srm/kunjungan")}
+                onClick={() => navigate({ to: "/srm/kunjungan" })}
                 className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 px-3 py-1.5 border border-slate-200 rounded-lg"
               >
                 <Filter className="w-4 h-4" /> View All in SRM
@@ -434,7 +434,7 @@ export default function OfficeDashboard() {
             </h2>
             <div className="space-y-3">
               <button
-                onClick={() => navigate("/srm/antrian")}
+                onClick={() => navigate({ to: "/srm/antrian" })}
                 className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 transition-colors group"
               >
                 <div className="flex items-center gap-3">
@@ -454,7 +454,7 @@ export default function OfficeDashboard() {
               </button>
 
               <button
-                onClick={() => navigate("/srm/dashboard")}
+                onClick={() => navigate({ to: "/srm/dashboard" })}
                 className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-teal-500 hover:bg-teal-50 transition-colors group"
               >
                 <div className="flex items-center gap-3">
@@ -474,7 +474,7 @@ export default function OfficeDashboard() {
               </button>
 
               <button
-                onClick={() => navigate("/pendaftaran-online")}
+                onClick={() => navigate({ to: "/pendaftaran-online" })}
                 className="w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 transition-colors group"
               >
                 <div className="flex items-center gap-3">
@@ -501,7 +501,7 @@ export default function OfficeDashboard() {
                 Today's Queue Schedule
               </h2>
               <button
-                onClick={() => navigate("/srm/antrian")}
+                onClick={() => navigate({ to: "/srm/antrian" })}
                 className="text-teal-600 text-sm font-bold hover:underline"
               >
                 View Live
