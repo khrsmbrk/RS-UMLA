@@ -6,17 +6,20 @@ import {
   CheckCircle2,
   Clock,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function PatientTagihan() {
   const [isPaid, setIsPaid] = useState(false);
 
   const handlePay = () => {
     setIsPaid(true);
-    alert("Simulasi: Pembayaran berhasil dilakukan via saldo RSUMLA Pay.");
+    toast.success(
+      "Simulasi: Pembayaran berhasil dilakukan via saldo RSUMLA Pay.",
+    );
   };
 
   const handleDownload = () => {
-    alert("Simulasi: Mengunduh Bukti Kwitansi (PDF)...");
+    toast.success("Simulasi: Mengunduh Bukti Kwitansi (PDF)...");
   };
 
   return (
@@ -74,7 +77,9 @@ export default function PatientTagihan() {
         ) : (
           <div className="bg-white rounded-xl border border-emerald-100 shadow-sm p-8 text-center flex flex-col items-center justify-center">
             <CheckCircle2 className="w-20 h-20 text-emerald-500 mb-4" />
-            <h3 className="text-lg font-bold text-slate-800 mb-2">Semua Tagihan Lunas</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-2">
+              Semua Tagihan Lunas
+            </h3>
             <p className="text-sm text-slate-500">
               Terima kasih. Anda tidak memiliki tagihan aktif saat ini.
             </p>
@@ -158,7 +163,7 @@ export default function PatientTagihan() {
             </ul>
           </div>
           <div className="p-3 border-t border-slate-100 bg-slate-50 text-center shrink-0">
-            <button 
+            <button
               onClick={handleDownload}
               className="text-xs font-bold text-emerald-700 flex items-center justify-center gap-1 mx-auto hover:text-emerald-800"
             >

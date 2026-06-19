@@ -6,10 +6,11 @@ import {
   Download,
   Calendar,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function PatientLab() {
   const handleDownload = (filename: string) => {
-    alert(`Simulasi: Mengunduh file ${filename} (PDF)...`);
+    toast.success(`Simulasi: Mengunduh file ${filename} (PDF)...`);
   };
 
   return (
@@ -50,8 +51,8 @@ export default function PatientLab() {
                       <span>Dr. Herman, Sp.PK</span>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => handleDownload('Hasil_Lab_Darah_Lipid.pdf')}
+                  <button
+                    onClick={() => handleDownload("Hasil_Lab_Darah_Lipid.pdf")}
                     className="text-xs font-bold bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded border border-indigo-100 hover:bg-indigo-100 flex items-center gap-1"
                   >
                     <Download className="w-3 h-3" /> PDF
@@ -90,8 +91,8 @@ export default function PatientLab() {
                       <span>Dr. Herman, Sp.PK</span>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => handleDownload('Hasil_Lab_Glukosa.pdf')}
+                  <button
+                    onClick={() => handleDownload("Hasil_Lab_Glukosa.pdf")}
                     className="text-xs font-bold bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded border border-indigo-100 hover:bg-indigo-100 flex items-center gap-1"
                   >
                     <Download className="w-3 h-3" /> PDF
@@ -130,8 +131,8 @@ export default function PatientLab() {
                       <span>Dr. Rini, Sp.Rad</span>
                     </div>
                   </div>
-                  <button 
-                    onClick={() => handleDownload('Hasil_Rad_Thorax.pdf')}
+                  <button
+                    onClick={() => handleDownload("Hasil_Rad_Thorax.pdf")}
                     className="text-xs font-bold bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded border border-indigo-100 hover:bg-indigo-100 flex items-center gap-1"
                   >
                     <Download className="w-3 h-3" /> Hasil

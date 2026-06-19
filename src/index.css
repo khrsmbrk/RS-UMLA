@@ -1,7 +1,45 @@
 @import "tailwindcss";
 
+/* Hide scrollbar universally for a sleek app look */
+*::-webkit-scrollbar {
+  display: none !important;
+}
+
+* {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 @media print {
   .no-print { display: none !important; }
   .print-only { display: block !important; }
   body { background-color: white; }
+  
+  @page {
+    size: A4 portrait;
+    margin: 20mm;
+  }
+  
+  table {
+    page-break-inside: auto;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  thead {
+    display: table-header-group;
+  }
+  tfoot {
+    display: table-footer-group;
+  }
 }

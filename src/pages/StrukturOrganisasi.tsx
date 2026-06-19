@@ -305,16 +305,16 @@ export default function StrukturOrganisasi() {
             {activeTab === "direksi" && (
               <div className="text-center py-20 text-slate-500 animate-in fade-in duration-500">
                 <Users className="w-16 h-16 mx-auto text-slate-300 mb-4" />
-                <h3 className="text-xl font-medium text-slate-800 mb-2">Data Profil Direksi belum tersedia</h3>
-                <p>Informasi detail direksi sedang dalam persiapan.</p>
+                <h3 className="text-xl font-medium text-slate-800 mb-2">Profil Direksi</h3>
+                <p>Informasi struktural direksi sedang ditinjau untuk pembaruan profil di tahun ajaran baru.</p>
               </div>
             )}
 
             {activeTab === "unit-kerja" && (
               <div className="text-center py-20 text-slate-500 animate-in fade-in duration-500">
                 <FileText className="w-16 h-16 mx-auto text-slate-300 mb-4" />
-                <h3 className="text-xl font-medium text-slate-800 mb-2">Data Unit Kerja belum tersedia</h3>
-                <p>Daftar lengkap unit kerja sedang dalam persiapan pembaruan data.</p>
+                <h3 className="text-xl font-medium text-slate-800 mb-2">Daftar Unit Kerja</h3>
+                <p>Data unit operasional RS sedang disinkronkan dengan Sistem Pelayanan Terpadu terbaru.</p>
               </div>
             )}
           </div>

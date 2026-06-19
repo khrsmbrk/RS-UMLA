@@ -1,5 +1,6 @@
-import React from 'react';
-import { ScanLine } from 'lucide-react';
+import React from "react";
+import { ScanLine } from "lucide-react";
+import toast from "react-hot-toast";
 
 const DocumentScanPlaceholder = () => {
   return (
@@ -10,10 +11,11 @@ const DocumentScanPlaceholder = () => {
       <div className="relative z-10">
         <h3 className="text-lg font-bold mb-2">Pemindaian Dokumen</h3>
         <p className="text-xs text-blue-100 mb-4 max-w-[80%]">
-          Fitur ini menggunakan kamera perangkat untuk memindai ID Card atau dokumen medis. (Tersedia di aplikasi mobile Android)
+          Fitur ini menggunakan kamera perangkat untuk memindai ID Card atau
+          dokumen medis. (Tersedia di aplikasi mobile Android)
         </p>
-        <button 
-          onClick={() => alert('Membuka kamera... (Simulasi)')}
+        <button
+          onClick={() => toast.success("Membuka kamera... (Simulasi)")}
           className="px-4 py-2 bg-white text-blue-700 text-sm font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors"
         >
           Buka Kamera

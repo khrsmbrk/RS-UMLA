@@ -2,6 +2,7 @@ import React from "react";
 import { useOutletContext } from "react-router-dom";
 import { Calendar, UserCircle, Users } from "lucide-react";
 import { SHIFTS } from "../../data/portalData";
+import toast from "react-hot-toast";
 
 export default function PortalKaryawanJadwal() {
   const { user } = useOutletContext<{ user: any }>();
@@ -20,7 +21,14 @@ export default function PortalKaryawanJadwal() {
             Jadwal mingguan Anda di unit {user?.unit}.
           </p>
         </div>
-        <button className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-lg shadow-sm font-bold text-sm transition-colors flex items-center gap-2">
+        <button
+          onClick={() =>
+            toast(
+              "Fitur Tukar Shift dapat diakses melalui portal Office. Mengarahkan ke sana...",
+            )
+          }
+          className="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-lg shadow-sm font-bold text-sm transition-colors flex items-center gap-2"
+        >
           <Users className="w-4 h-4" /> Tukar Shift
         </button>
       </div>

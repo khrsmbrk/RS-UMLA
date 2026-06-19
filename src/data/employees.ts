@@ -39,4 +39,14 @@ export const EMPLOYEES = [
     status: "Hadir",
     lembur: 1,
   },
+  {
+    id: 5,
+    nip: "RSML-0005",
+    qrId: "QR-RSML-0005",
+    name: "Budi Santoso, S.Kom.",
+    jabatan: "Web Developer",
+    divisi: "it",
+    status: "Hadir",
+    lembur: 0,
+  },
 ];

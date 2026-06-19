@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserPlus, Edit, Trash2, Save, XCircle, FolderOpen, X } from 'lucide-react';
 import { useSRMStore, Operator } from '../../store/srmStore';
+import toast from 'react-hot-toast';
 
 const SRMPengaturan = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const SRMPengaturan = () => {
 
   const handleSaveSettings = () => {
     updateSettings(localSettings);
-    alert('Pengaturan berhasil disimpan!');
+    toast.success('Pengaturan berhasil disimpan!');
   };
 
   const handleCheckboxChange = (field: keyof Operator['permissions']) => {
@@ -47,7 +48,7 @@ const SRMPengaturan = () => {
   };
 
   const handleEditClick = () => {
-    if (!selectedOpId) return alert('Pilih operator terlebih dahulu');
+    if (!selectedOpId) return toast.error('Pilih operator terlebih dahulu');
     const op = operators.find(o => o.id === selectedOpId);
     if (op) {
       setIsEdit(true);
@@ -57,7 +58,7 @@ const SRMPengaturan = () => {
   };
 
   const handleDeleteClick = () => {
-    if (!selectedOpId) return alert('Pilih operator terlebih dahulu');
+    if (!selectedOpId) return toast.error('Pilih operator terlebih dahulu');
     if (confirm('Yakin ingin menghapus operator ini?')) {
       deleteOperator(selectedOpId);
       setSelectedOpId(null);
@@ -104,7 +105,7 @@ const SRMPengaturan = () => {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    alert(`Backup data berhasil diunduh dengan nama: ${fileName}`);
+    toast.success(`Backup data berhasil diunduh dengan nama: ${fileName}`);
   };
 
   const handleRestoreData = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,9 +117,9 @@ const SRMPengaturan = () => {
       try {
         const json = JSON.parse(event.target?.result as string);
         useSRMStore.setState(json);
-        alert('Data berhasil di-restore!');
+        toast.success('Data berhasil di-restore!');
       } catch (error) {
-        alert('Format file backup tidak valid.');
+        toast.error('Format file backup tidak valid.');
         console.error(error);
       }
     };
@@ -341,7 +342,7 @@ const SRMPengaturan = () => {
             <form onSubmit={handleSaveOperator} className="p-4 overflow-y-auto max-h-[80vh]">
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-1">Kode Operator</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-1">Username atau NIP</label>
                   <input type="text" className="w-full border border-slate-300 rounded px-3 py-2 text-sm" value={opForm.kode || ''} onChange={e => setOpForm({...opForm, kode: e.target.value})} required />
                 </div>
                 <div>
@@ -350,7 +351,7 @@ const SRMPengaturan = () => {
                 </div>
                 {!isEdit && (
                   <div className="col-span-2">
-                    <label className="block text-sm font-bold text-slate-700 mb-1">Password</label>
+                    <label className="block text-sm font-bold text-slate-700 mb-1">Kata Sandi</label>
                     <input type="text" className="w-full border border-slate-300 rounded px-3 py-2 text-sm" value={opForm.passwordHash || ''} onChange={e => setOpForm({...opForm, passwordHash: e.target.value})} required />
                   </div>
                 )}

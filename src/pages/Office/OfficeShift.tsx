@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Calendar, RotateCcw, CheckCircle, XCircle } from "lucide-react";
 import { useOfficeStore } from "./store/officeStore";
+import toast from "react-hot-toast";
 
 export default function OfficeShift() {
+  const { shifts, addShift } = useOfficeStore();
+  const [formData, setFormData] = useState({
+    date: "",
+    toShift: "Shift Pagi (07:00 - 14:00)",
+    partner: "Ns. Dewi Sartika, S.Kep",
+    reason: ""
+  });
+
+  const handleSubmit = () => {
+    if(!formData.date || !formData.reason) return toast.error("Lengkapi semua field ajuan!");
+    addShift({
+      id: `SHF-${Date.now()}`,
+      employee: "Anda",
+      unit: "IGD",
+      date: formData.date,
+      shiftStr: formData.toShift,
+      status: "Menunggu"
+    });
+    toast.success("Pengajuan Tukar Shift berhasil dikirim!");
+  };
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
@@ -125,6 +146,8 @@ export default function OfficeShift() {
                 </label>
                 <input
                   type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   className="w-full border border-slate-300 rounded-lg p-3 text-sm font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
                 />
               </div>
@@ -132,7 +155,11 @@ export default function OfficeShift() {
                 <label className="block text-[10px] font-black uppercase tracking-widest text-slate-600 mb-2">
                   Tukar Shift Menjadi
                 </label>
-                <select className="w-full border border-slate-300 rounded-lg p-3 text-sm font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm">
+                <select 
+                  value={formData.toShift}
+                  onChange={(e) => setFormData({ ...formData, toShift: e.target.value })}
+                  className="w-full border border-slate-300 rounded-lg p-3 text-sm font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+                >
                   <option>Shift Pagi (07:00 - 14:00)</option>
                   <option>Shift Sore (14:00 - 21:00)</option>
                   <option>Shift Malam (21:00 - 07:00)</option>
@@ -143,7 +170,11 @@ export default function OfficeShift() {
               <label className="block text-[10px] font-black uppercase tracking-widest text-slate-600 mb-2">
                 Rekan Pengganti (Wajib)
               </label>
-              <select className="w-full border border-slate-300 rounded-lg p-3 text-sm font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm">
+              <select 
+                value={formData.partner}
+                onChange={(e) => setFormData({ ...formData, partner: e.target.value })}
+                className="w-full border border-slate-300 rounded-lg p-3 text-sm font-bold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+              >
                 <option>Ns. Dewi Sartika, S.Kep</option>
                 <option>Ns. Ahmad Fauzi, S.Kep</option>
                 <option>Ns. Nurul Hidayah, AMd.Kep</option>
@@ -155,16 +186,14 @@ export default function OfficeShift() {
               </label>
               <textarea
                 rows={2}
+                value={formData.reason}
+                onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                 className="w-full border border-slate-300 rounded-lg p-3 text-sm font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm placeholder-slate-400"
                 placeholder="Jelaskan alasan pertukaran shift..."
               ></textarea>
             </div>
             <button
-              onClick={() =>
-                alert(
-                  "Pengajuan Tukar Shift berhasil dikirim ke rekan terkait dan menunggu acc (persetujuan) Kepala Ruangan.",
-                )
-              }
+              onClick={handleSubmit}
               className="w-full py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-sm hover:bg-indigo-700 transition-transform active:scale-95 border border-indigo-700/20 flex items-center justify-center gap-2"
             >
               Kirim Pengajuan Tukar
@@ -183,46 +212,31 @@ export default function OfficeShift() {
           </div>
 
           <div className="p-6 space-y-4 flex-1">
-            <div className="p-4 border justify-between flex-col sm:flex-row border-slate-200 rounded-xl flex sm:items-center gap-4 hover:border-amber-200 hover:shadow-sm transition-all group">
-              <div className="flex-1">
-                <div className="font-bold text-slate-800 text-base mb-1">
-                  Tukar Shift Pagi → Shift Malam
+            {shifts.map((s: any) => (
+              <div key={s.id} className="p-4 border justify-between flex-col sm:flex-row border-slate-200 rounded-xl flex sm:items-center gap-4 hover:border-amber-200 hover:shadow-sm transition-all group">
+                <div className="flex-1">
+                  <div className="font-bold text-slate-800 text-base mb-1">
+                    Tukar ke {s.shiftStr}
+                  </div>
+                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    Pengganti: {s.partner || s.employee}
+                  </div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 inline-block px-2 py-0.5 rounded border border-slate-200">
+                    {s.date}
+                  </div>
                 </div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  Pengganti: Ns. Dewi Sartika
-                </div>
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 inline-block px-2 py-0.5 rounded border border-slate-200">
-                  28 Mei 2026
-                </div>
-              </div>
-              <div className="shrink-0 text-left sm:text-right">
-                <span className="px-3 py-1.5 bg-amber-50 text-amber-700 text-[10px] font-black uppercase tracking-widest border border-amber-200 shadow-sm rounded-md block mb-1.5 text-center">
-                  Menunggu Karu
-                </span>
-                <span className="text-[10px] font-bold text-emerald-600 block text-center">
-                  ✔ Disetujui Rekan
-                </span>
-              </div>
-            </div>
-
-            <div className="p-4 border justify-between flex-col sm:flex-row border-slate-100 rounded-xl flex sm:items-center gap-4 opacity-75 grayscale-[20%]">
-              <div className="flex-1">
-                <div className="font-bold text-slate-800 text-base mb-1 line-through decoration-slate-300">
-                  Tukar Shift Sore → Shift Pagi
-                </div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                  Pengganti: Ns. Ahmad Fauzi
-                </div>
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 bg-slate-100 inline-block px-2 py-0.5 rounded border border-slate-200">
-                  15 Mei 2026
+                <div className="shrink-0 text-left sm:text-right">
+                  <span className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-widest border shadow-sm rounded-md block mb-1.5 text-center ${s.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+                    {s.status}
+                  </span>
+                  {s.status !== "Completed" && (
+                     <span className="text-[10px] font-bold text-amber-600 block text-center">
+                       Menunggu Acc
+                     </span>
+                  )}
                 </div>
               </div>
-              <div className="shrink-0 text-left sm:text-right">
-                <span className="px-3 py-1.5 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest border border-emerald-200 shadow-sm rounded-md block text-center">
-                  Masuk Jadwal
-                </span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

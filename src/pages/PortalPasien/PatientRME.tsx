@@ -1,12 +1,194 @@
-import React from "react";
+import { secureLocalStorage } from "../../utils/crypto";
+import React, { useMemo } from "react";
 import { DUMMY_VISITS, VISIT_STATUS_BADGE } from "../../data/mockData";
 import { Download } from "lucide-react";
+import { useOutletContext } from "react-router-dom";
+import { useSRMStore } from "../../store/srmStore";
+import { useSiteStore } from "../../store/siteStore";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 export default function PatientRME() {
-  const visits = DUMMY_VISITS;
+  const { patient } = useOutletContext<{ patient: any }>();
+  const srmVisits = useSRMStore((state) => state.visits);
+  const siteSettings = useSiteStore((state) => state.settings);
+  const srmSettings = useSRMStore((state) => state.settings);
+
+  const visits = useMemo(() => {
+    const srmMapped = srmVisits
+      .filter((v) => v.patientId === patient.mrn || v.patientId === patient.id)
+      .map((v) => ({
+        id: v.id,
+        date: v.tanggalKunjungan,
+        clinic: "Poli Reguler", // simplified
+        doctor: "Dokter RS", // basic fallback
+        icd10: "-",
+        diagnosis: v.diagnosis || (v.status === "Selesai" ? "Belum ada diagnosis" : "Menunggu Antrean"),
+        procedures: v.terapi ? [v.terapi] : [],
+        drugPrescription: [],
+        adminFee: 0,
+        status: v.status,
+        paymentMethod: "Umum",
+      }))
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    // Check if we have online visits in localStorage
+    let onlineVisits: any[] = [];
+    try {
+      const saved = secureLocalStorage.getItem("riwayatAntreanUMLA");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Filter those matching patient name approximately (since online may not have MRN)
+        onlineVisits = parsed
+          .filter(
+            (o: any) => o.nama.toLowerCase() === patient.name.toLowerCase(),
+          )
+          .map((o: any) => ({
+            id: o.kodeBooking,
+            date: o.tanggal,
+            clinic: o.poli || o.layanan || "Layanan Medis",
+            doctor: o.dokter,
+            icd10: "-",
+            diagnosis: "Pendaftaran Online / App",
+            procedures: [],
+            drugPrescription: [],
+            adminFee: 0,
+            status: "Menunggu",
+            paymentMethod: o.penjaminan || "Umum",
+          }));
+      }
+    } catch (e) {}
+
+    // Merge all sources eliminating duplicates by date + clinic
+    const dummyToUse =
+      patient.mrn === "RM-10293" || patient.id === "RM-10293"
+        ? DUMMY_VISITS
+        : [];
+    const merged = [...onlineVisits, ...srmMapped, ...dummyToUse];
+    const unique = merged.filter(
+      (v, i, a) =>
+        a.findIndex((t) => t.date === v.date && t.clinic === v.clinic) === i,
+    );
+    return unique.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+  }, [srmVisits, patient.mrn, patient.id, patient.name]);
 
   const handleDownload = () => {
-    alert("Simulasi: Mengunduh ringkasan Rekam Medis Elektronik (PDF)...");
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    const drawContent = (logoImg?: HTMLImageElement) => {
+      // Hospital Header (Kop Surat)
+      if (logoImg) {
+        doc.addImage(logoImg, "PNG", 14, 15, 20, 20); // x, y, width, height
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text(srmSettings.header1 || "RUMAH SAKIT UMLA", pageWidth / 2, 20, {
+        align: "center",
+      });
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text(
+        srmSettings.header2 || "Jl. Raya Plalangan Plosowahyu KM 2, Lamongan",
+        pageWidth / 2,
+        26,
+        { align: "center" },
+      );
+      doc.text(
+        "Telp: (0322) 123456 | Email: info@rsumla.com | Web: www.rsumla.com",
+        pageWidth / 2,
+        31,
+        { align: "center" },
+      );
+
+      // Header Line
+      doc.setLineWidth(1);
+      doc.line(14, 38, pageWidth - 14, 38);
+      doc.setLineWidth(0.2);
+      doc.line(14, 39, pageWidth - 14, 39);
+
+      // Document Title
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("RINGKASAN REKAM MEDIS ELEKTRONIK (RME)", pageWidth / 2, 48, {
+        align: "center",
+      });
+
+      // Patient Info
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(`No. Rekam Medis : ${patient.mrn || patient.id}`, 14, 58);
+      doc.text(`Nama Pasien     : ${patient.name}`, 14, 63);
+      doc.text(`No. NIK         : ${patient.nik}`, 14, 68);
+      doc.text(
+        `Tanggal Cetak   : ${new Date().toLocaleDateString("id-ID")}`,
+        14,
+        73,
+      );
+
+      // Table Data
+      const tableColumn = [
+        "Tanggal",
+        "Poliklinik/Layanan",
+        "Dokter",
+        "Diagnosis/Keterangan",
+        "Status",
+        "Cara Bayar",
+      ];
+      const tableRows: any[] = [];
+
+      visits.forEach((visit) => {
+        const visitData = [
+          new Date(visit.date).toLocaleDateString("id-ID"),
+          visit.clinic,
+          visit.doctor,
+          visit.diagnosis,
+          visit.status,
+          visit.paymentMethod,
+        ];
+        tableRows.push(visitData);
+      });
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 78,
+        theme: "grid",
+        styles: { fontSize: 8, cellPadding: 3 },
+        headStyles: { fillColor: [16, 185, 129] }, // emerald-500
+        alternateRowStyles: { fillColor: [248, 250, 252] }, // slate-50
+      });
+
+      // Disclaimer
+      const finalY = (doc as any).lastAutoTable.finalY || 78;
+      doc.setFontSize(8);
+      doc.setTextColor(100);
+      doc.text(
+        "Dokumen ini dihasilkan secara otomatis oleh sistem portal pasien dan sah tanpa tanda tangan.",
+        pageWidth / 2,
+        finalY + 15,
+        { align: "center" },
+      );
+
+      // Save PDF
+      doc.save(
+        `RME_${patient.name.replace(/\s+/g, "_")}_${new Date().toISOString().split("T")[0]}.pdf`,
+      );
+    };
+
+    if (siteSettings.logoUrl) {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.onload = () => drawContent(img);
+      img.onerror = () => drawContent(); // fallback without image
+      img.src = siteSettings.logoUrl;
+    } else {
+      drawContent();
+    }
   };
 
   return (
@@ -20,7 +202,7 @@ export default function PatientRME() {
             Menampilkan riwayat kunjungan, ICD-10, tindakan, dan biaya.
           </p>
         </div>
-        <button 
+        <button
           onClick={handleDownload}
           className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded-lg shadow-sm transition-colors text-sm flex items-center justify-center gap-2 border border-slate-200"
         >

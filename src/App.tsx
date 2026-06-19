@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 const HomePageRSUMLA = React.lazy(() => import("./pages/HomePageRSUMLA"));
 const TentangKami = React.lazy(() => import("./pages/TentangKami"));
 const JadwalDokter = React.lazy(() => import("./pages/JadwalDokter"));
@@ -26,13 +27,18 @@ const Kedudukan = React.lazy(() => import("./pages/Kedudukan"));
 const RujukanKabupaten = React.lazy(() => import("./pages/RujukanKabupaten"));
 const GenericPage = React.lazy(() => import("./pages/GenericPage"));
 const SDM = React.lazy(() => import("./pages/SDM"));
-const StrukturOrganisasi = React.lazy(() => import("./pages/StrukturOrganisasi"));
+const StrukturOrganisasi = React.lazy(
+  () => import("./pages/StrukturOrganisasi"),
+);
 const PatientTagihan = React.lazy(
   () => import("./pages/PortalPasien/PatientTagihan"),
 );
 const PatientLab = React.lazy(() => import("./pages/PortalPasien/PatientLab"));
 const PatientTelemedisin = React.lazy(
   () => import("./pages/PortalPasien/PatientTelemedisin"),
+);
+const PatientNotifikasi = React.lazy(
+  () => import("./pages/PortalPasien/PatientNotifikasi"),
 );
 const PortalKaryawanLayout = React.lazy(
   () => import("./pages/PortalKaryawan/PortalKaryawanLayout"),
@@ -62,7 +68,17 @@ const SRMLaporan = React.lazy(() => import("./pages/SRM/SRMLaporan"));
 const SRMDataMaster = React.lazy(() => import("./pages/SRM/SRMDataMaster"));
 const SRMPassword = React.lazy(() => import("./pages/SRM/SRMPassword"));
 const SRMRegister = React.lazy(() => import("./pages/SRM/SRMRegister"));
-const ComingSoon = React.lazy(() => import("./components/ComingSoon"));
+const SRMLogin = React.lazy(() => import("./pages/SRM/SRMLogin"));
+const SRMApotek = React.lazy(() => import("./pages/SRM/SRMApotek"));
+const SRMLaboratorium = React.lazy(() => import("./pages/SRM/SRMLaboratorium"));
+const SRMKasir = React.lazy(() => import("./pages/SRM/SRMKasir"));
+const SRMPoliklinik = React.lazy(() => import("./pages/SRM/SRMPoliklinik"));
+const SRMIGD = React.lazy(() => import("./pages/SRM/SRMIGD"));
+const SRMRawatInap = React.lazy(() => import("./pages/SRM/SRMRawatInap"));
+const SRMRadiologi = React.lazy(() => import("./pages/SRM/SRMRadiologi"));
+const SRMLogistik = React.lazy(() => import("./pages/SRM/SRMLogistik"));
+const SRMModul = React.lazy(() => import("./pages/SRM/SRMModul"));
+const AccessDenied = React.lazy(() => import("./components/AccessDenied"));
 const OfficeLayout = React.lazy(() => import("./pages/Office/OfficeLayout"));
 const OfficeLogin = React.lazy(() => import("./pages/Office/OfficeLogin"));
 const OfficeDashboard = React.lazy(
@@ -86,7 +102,7 @@ const OfficeFleet = React.lazy(() => import("./pages/Office/OfficeFleet"));
 const OfficeELearning = React.lazy(
   () => import("./pages/Office/OfficeELearning"),
 );
-const OfficeHRD = React.lazy(() => import("./pages/Office/OfficeHRD"));
+const OfficeHRD = React.lazy(() => import("./pages/Office/HRManagement"));
 const OfficeHRAnalytics = React.lazy(
   () => import("./pages/Office/OfficeHRAnalytics"),
 );
@@ -156,6 +172,18 @@ const OfficeSecurity = React.lazy(
   () => import("./pages/Office/OfficeSecurity"),
 );
 const OfficeParking = React.lazy(() => import("./pages/Office/OfficeParking"));
+const OfficeProfile = React.lazy(() => import("./pages/Office/OfficeProfile"));
+const OfficePatients = React.lazy(
+  () => import("./pages/Office/OfficePatients"),
+);
+const OfficeDoctors = React.lazy(() => import("./pages/Office/OfficeDoctors"));
+const OfficeRoom = React.lazy(() => import("./pages/Office/OfficeRoom"));
+const OfficeMedicine = React.lazy(
+  () => import("./pages/Office/OfficeMedicine"),
+);
+const OfficeAnalytic = React.lazy(
+  () => import("./pages/Office/OfficeAnalytic"),
+);
 const OfficeSpiritual = React.lazy(
   () => import("./pages/Office/OfficeSpiritual"),
 );
@@ -264,6 +292,18 @@ const PortalKaryawanJadwal = React.lazy(
 const PortalKaryawanAbsensi = React.lazy(
   () => import("./pages/PortalKaryawan/PortalKaryawanAbsensi"),
 );
+const PortalKaryawanLembur = React.lazy(
+  () => import("./pages/PortalKaryawan/PortalKaryawanLembur"),
+);
+const PortalKaryawanPelatihan = React.lazy(
+  () => import("./pages/PortalKaryawan/PortalKaryawanPelatihan"),
+);
+const PortalKaryawanKinerja = React.lazy(
+  () => import("./pages/PortalKaryawan/PortalKaryawanKinerja"),
+);
+const PortalKaryawanPengaturan = React.lazy(
+  () => import("./pages/PortalKaryawan/PortalKaryawanPengaturan"),
+);
 import {
   BrowserRouter as Router,
   Routes,
@@ -295,6 +335,7 @@ function App() {
 
   return (
     <FirebaseProvider>
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       <React.Suspense
         fallback={
           <div className="flex h-screen items-center justify-center p-4 bg-slate-50">
@@ -314,10 +355,7 @@ function App() {
               path="/profil/struktur-organisasi"
               element={<StrukturOrganisasi />}
             />
-            <Route
-              path="/profil/sumber-daya-manusia"
-              element={<SDM />}
-            />
+            <Route path="/profil/sumber-daya-manusia" element={<SDM />} />
             <Route path="/profil/penghargaan-haki" element={<GenericPage />} />
 
             <Route
@@ -343,6 +381,8 @@ function App() {
             <Route path="/laporan" element={<GenericPage />} />
             <Route path="/reformasi-birokrasi" element={<GenericPage />} />
             <Route path="/pengaduan" element={<GenericPage />} />
+            <Route path="/kebijakan-privasi" element={<GenericPage />} />
+            <Route path="/syarat-ketentuan" element={<GenericPage />} />
 
             <Route path="/ppid" element={<PPID />} />
             <Route path="/jadwal-dokter" element={<JadwalDokter />} />
@@ -351,28 +391,32 @@ function App() {
             <Route path="/pendaftaran-online" element={<PendaftaranOnline />} />
 
             {/* Portal Pasien & RME */}
-            <Route path="/portal/pendaftaran" element={<PortalLogin />} />
+            <Route path="/pasien/login" element={<PortalLogin />} />
             <Route element={<PatientLayout />}>
               <Route
-                path="/portal/pendaftaran/dashboard"
+                path="/pasien/dashboard"
                 element={<PatientSummary />}
               />
-              <Route path="/portal/pendaftaran/rme" element={<PatientRME />} />
+              <Route path="/pasien/rme" element={<PatientRME />} />
               <Route
-                path="/portal/pendaftaran/daftar"
+                path="/pasien/daftar"
                 element={<PatientRegistration />}
               />
               <Route
-                path="/portal/pendaftaran/tagihan"
+                path="/pasien/tagihan"
                 element={<PatientTagihan />}
               />
-              <Route path="/portal/pendaftaran/lab" element={<PatientLab />} />
+              <Route path="/pasien/lab" element={<PatientLab />} />
               <Route
-                path="/portal/pendaftaran/telemedisin"
+                path="/pasien/telemedisin"
                 element={<PatientTelemedisin />}
               />
+              <Route
+                path="/pasien/notifikasi"
+                element={<PatientNotifikasi />}
+              />
             </Route>
-            
+
             {/* Portal Karyawan */}
             <Route
               path="/karyawan/login"
@@ -387,11 +431,15 @@ function App() {
               <Route path="absensi" element={<PortalKaryawanAbsensi />} />
               <Route path="jadwal" element={<PortalKaryawanJadwal />} />
               <Route path="cuti" element={<PortalKaryawanCuti />} />
-              <Route path="slip-gaji" element={<PortalKaryawanGaji />} />
+              <Route path="lembur" element={<PortalKaryawanLembur />} />
+              <Route path="gaji" element={<PortalKaryawanGaji />} />
+              <Route path="pelatihan" element={<PortalKaryawanPelatihan />} />
+              <Route path="kinerja" element={<PortalKaryawanKinerja />} />
               <Route path="berkas" element={<PortalKaryawanBerkas />} />
+              <Route path="pengaturan" element={<PortalKaryawanPengaturan />} />
               <Route
                 path="*"
-                element={<ComingSoon title="Portal Karyawan" />}
+                element={<AccessDenied title="Akses Ditolak: Portal Karyawan" />}
               />
             </Route>
 
@@ -403,6 +451,13 @@ function App() {
                 element={<Navigate to="/office/dashboard" replace />}
               />
               <Route path="dashboard" element={<OfficeDashboard />} />
+              <Route path="access-denied" element={<AccessDenied title="Akses Ditolak" />} />
+              <Route path="patient" element={<OfficePatients />} />
+              <Route path="doctors" element={<OfficeDoctors />} />
+              <Route path="room" element={<OfficeRoom />} />
+              <Route path="medicine" element={<OfficeMedicine />} />
+              <Route path="analytic" element={<OfficeAnalytic />} />
+              <Route path="profile" element={<OfficeProfile />} />
               <Route path="nota-dinas" element={<OfficeNotaDinas />} />
               <Route path="ess" element={<OfficeESS />} />
               <Route path="shift" element={<OfficeShift />} />
@@ -500,10 +555,11 @@ function App() {
               <Route path="palliative" element={<OfficePalliative />} />
               <Route path="optic" element={<OfficeOptic />} />
 
-              <Route path="*" element={<ComingSoon title="Modul Office" />} />
+              <Route path="*" element={<AccessDenied title="Akses Ditolak: Kredensial Tidak Valid" />} />
             </Route>
 
             {/* SRM Routes */}
+            <Route path="/srm/login" element={<SRMLogin />} />
             <Route path="/srm/antrian-tv" element={<SRMAntrianTV />} />
             <Route path="/srm" element={<SRMLayout />}>
               <Route index element={<Navigate to="/srm/dashboard" replace />} />
@@ -524,9 +580,18 @@ function App() {
               <Route path="register" element={<SRMRegister />} />
               <Route path="vaksinasi" element={<SRMVaksinasi />} />
               <Route path="laporan" element={<SRMLaporan />} />
+              <Route path="apotek" element={<SRMApotek />} />
+              <Route path="laboratorium" element={<SRMLaboratorium />} />
+              <Route path="kasir" element={<SRMKasir />} />
+              <Route path="rawat-jalan" element={<SRMPoliklinik />} />
+              <Route path="igd" element={<SRMIGD />} />
+              <Route path="rawat-inap" element={<SRMRawatInap />} />
+              <Route path="radiologi" element={<SRMRadiologi />} />
+              <Route path="logistik" element={<SRMLogistik />} />
+              <Route path=":moduleName" element={<SRMModul />} />
               <Route
                 path="*"
-                element={<ComingSoon title="Halaman Tidak Ditemukan" />}
+                element={<AccessDenied title="Akses Ditolak: Modul SRM" />}
               />
             </Route>
           </Routes>

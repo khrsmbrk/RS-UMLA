@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Target,
   Star,
@@ -6,29 +6,34 @@ import {
   TrendingUp,
   CheckCircle,
   AlertTriangle,
+  Search,
 } from "lucide-react";
 
 export default function OfficeAppraisal() {
+  const [searchTerm, setSearchTerm] = useState("");
+
   const staff = [
-    {
-      name: "Ns. Ayu Lestari, S.Kep",
-      role: "Perawat Pelaksana IGD",
-      score: 92,
-      status: "Di Atas Ekspektasi",
-    },
-    {
-      name: "Budi Santoso",
-      role: "Staf Pendaftaran",
-      score: 85,
-      status: "Memenuhi Ekspektasi",
-    },
-    {
-      name: "Dr. Cipto Mangunkusumo",
-      role: "Dokter Jaga",
-      score: 78,
-      status: "Perlu Perbaikan",
-    },
+      {
+        name: "Ns. Ayu Lestari, S.Kep",
+        role: "Perawat Pelaksana IGD",
+        score: 92,
+        status: "Di Atas Ekspektasi",
+      },
+      {
+        name: "Budi Santoso",
+        role: "Staf Pendaftaran",
+        score: 85,
+        status: "Memenuhi Ekspektasi",
+      },
+      {
+        name: "Dr. Cipto Mangunkusumo",
+        role: "Dokter Jaga",
+        score: 78,
+        status: "Perlu Perbaikan",
+      },
   ];
+
+  const filteredStaff = staff.filter(s => s.name.toLowerCase().includes(searchTerm.toLowerCase()) || s.role.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
@@ -103,14 +108,26 @@ export default function OfficeAppraisal() {
         </div>
 
         <div className="xl:col-span-2 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-          <div className="p-5 border-b border-slate-100 bg-slate-50/50 flex flex-col gap-2">
-            <h3 className="font-black text-slate-800 text-lg">
-              Evaluasi Tim (Tugas Kepala Ruangan / Manajer)
-            </h3>
-            <p className="text-sm font-medium text-slate-500">
-              Mohon selesaikan form penilaian untuk tim di bawah jajaran Anda
-              sebelum tanggal 30 bulan berjalan.
-            </p>
+          <div className="p-5 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+             <div className="flex flex-col gap-2">
+                <h3 className="font-black text-slate-800 text-lg">
+                  Evaluasi Tim (Tugas Kepala Ruangan / Manajer)
+                </h3>
+                <p className="text-sm font-medium text-slate-500">
+                  Mohon selesaikan form penilaian untuk tim di bawah jajaran Anda
+                  sebelum tanggal 30 bulan berjalan.
+                </p>
+             </div>
+              <div className="relative w-full sm:w-64 shrink-0">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Cari Pegawai..."
+                  className="w-full pl-9 pr-4 py-2 border border-slate-200 bg-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+                />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              </div>
           </div>
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-sm text-left">
@@ -131,7 +148,7 @@ export default function OfficeAppraisal() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {staff.map((s, i) => (
+                {filteredStaff.map((s, i) => (
                   <tr
                     key={i}
                     className="hover:bg-slate-50/80 transition-colors group"

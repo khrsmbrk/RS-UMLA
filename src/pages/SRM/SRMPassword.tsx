@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, Save, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function SRMPassword() {
   const navigate = useNavigate();
@@ -10,10 +11,10 @@ export default function SRMPassword() {
 
   const handleSave = () => {
     if (newPassword !== confirmPassword) {
-      alert('Password baru dan konfirmasi tidak cocok!');
+      toast.error('Password baru dan konfirmasi tidak cocok!');
       return;
     }
-    alert('Password berhasil diperbarui (Simulasi)');
+    toast.success('Password berhasil diperbarui (Simulasi)');
     setOldPassword('');
     setNewPassword('');
     setConfirmPassword('');

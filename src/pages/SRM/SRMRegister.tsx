@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserPlus, Save, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 export default function SRMRegister() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function SRMRegister() {
   });
 
   const handleSave = () => {
-    alert('User baru berhasil didaftarkan (Simulasi)');
+    toast.success('User baru berhasil didaftarkan (Simulasi)');
     setFormData({ username: '', fullName: '', role: 'Staff', password: '' });
   };
 

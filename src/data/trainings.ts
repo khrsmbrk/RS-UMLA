@@ -6,7 +6,7 @@ export const TRAININGS = [
     date: "2026-04-10",
     targetUnit: "Semua Medis & Keperawatan",
     status: "Pendaftaran Dibuka",
-    participants: ["RSML-0003", "RSML-0004"]
+    participants: ["RSML-0003", "RSML-0004"],
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const TRAININGS = [
     date: "2026-04-15",
     targetUnit: "Semua Karyawan",
     status: "Pendaftaran Dibuka",
-    participants: ["RSML-0002"]
+    participants: ["RSML-0002"],
   },
   {
     id: 3,
@@ -24,6 +24,6 @@ export const TRAININGS = [
     date: "2026-03-05",
     targetUnit: "Keperawatan",
     status: "Selesai",
-    participants: ["RSML-0004"]
-  }
+    participants: ["RSML-0004"],
+  },
 ];

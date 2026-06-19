@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import {
   FileSearch,
   Search,
@@ -8,8 +8,66 @@ import {
   ArrowRight,
   Clock,
 } from "lucide-react";
+import { useOfficeStore } from "./store/officeStore";
 
 export default function OfficeAudit() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const storeAudits = useOfficeStore(state => state.audits);
+  const { addAudit } = useOfficeStore();
+
+  const audits = useMemo(() => [
+      ...storeAudits.map((a: any) => ({
+        id: a.id,
+        dept: a.unit,
+        risk: a.score < 70 ? "Tinggi" : a.score < 90 ? "Sedang" : "Rendah",
+        desc: `${a.type} - Skor: ${a.score} (Auditor: ${a.auditor})`
+      })),
+      {
+        id: "SPI-26-041",
+        dept: "Instalasi Farmasi",
+        risk: "Tinggi",
+        desc: "Selisih stok fisik vs sistem pada lemari obat Narkotika.",
+      },
+      {
+        id: "SPI-26-039",
+        dept: "Bagian Keuangan",
+        risk: "Sedang",
+        desc: "Klaim BPJS bulan Februari telat disubmit melewati batas maksimal h+4.",
+      },
+      {
+        id: "SPI-26-042",
+        dept: "Pengadaan/Logistik",
+        risk: "Tinggi",
+        desc: "Tender pengadaan alkes 500jt+ tanpa 3 vendor pembanding.",
+      },
+      {
+        id: "SPI-26-038",
+        dept: "Pendaftaran Rawat Jalan",
+        risk: "Rendah",
+        desc: "Waktu tunggu antrean pendaftaran rata-rata > 15 menit pada jam sibuk (08:00 - 10:00).",
+      },
+      {
+        id: "SPI-26-035",
+        dept: "HRD / SDM",
+        risk: "Sedang",
+        desc: "STR Perawat a.n Sari Lestari expired, belum ada bukti pengurusan SIP baru.",
+      },
+  ], [storeAudits]);
+
+  const filteredAudits = audits.filter(a => a.dept.toLowerCase().includes(searchTerm.toLowerCase()) || a.desc.toLowerCase().includes(searchTerm.toLowerCase()) || a.id.toLowerCase().includes(searchTerm.toLowerCase()));
+
+  const handleTambahTemuan = () => {
+    addAudit({
+      id: `SPI-NEW-${Date.now().toString().slice(-4)}`,
+      type: "Temuan Ekstra",
+      unit: "Rekam Medis",
+      date: new Date().toISOString().split('T')[0],
+      auditor: "Anda",
+      score: 65,
+      status: "New"
+    });
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10 flex flex-col h-[85vh]">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm shrink-0">
@@ -27,7 +85,10 @@ export default function OfficeAudit() {
           <button className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 w-full sm:w-auto px-5 py-2.5 rounded-lg shadow-sm font-bold flex items-center justify-center gap-2 text-sm transition-colors">
             <FileCheck className="w-5 h-5" /> Export Laporan
           </button>
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto px-5 py-2.5 rounded-lg shadow-sm font-bold flex items-center justify-center gap-2 text-sm transition-colors focus:ring-4 focus:ring-indigo-600/20">
+          <button 
+            onClick={handleTambahTemuan}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white w-full sm:w-auto px-5 py-2.5 rounded-lg shadow-sm font-bold flex items-center justify-center gap-2 text-sm transition-colors focus:ring-4 focus:ring-indigo-600/20"
+          >
             Tambah Temuan
           </button>
         </div>
@@ -140,44 +201,23 @@ export default function OfficeAudit() {
 
         {/* Audit SPI Sidebar */}
         <div className="flex flex-col bg-white border border-slate-200 rounded-xl shadow-sm min-h-0 h-full">
-          <div className="p-5 border-b border-rose-100 bg-rose-50/50 flex items-center justify-between shrink-0 rounded-t-xl">
+          <div className="p-5 border-b border-rose-100 bg-rose-50/50 flex flex-col gap-3 shrink-0 rounded-t-xl">
             <h3 className="font-black text-rose-800 flex items-center gap-2 uppercase tracking-widest text-sm">
               <AlertCircle className="w-5 h-5" /> Active Findings (SPI)
             </h3>
+            <div className="relative w-full">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Cari Temuan..."
+                className="w-full pl-9 pr-4 py-2 border border-rose-200 bg-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all shadow-sm"
+              />
+              <Search className="w-4 h-4 text-rose-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            </div>
           </div>
           <div className="divide-y divide-slate-100 overflow-y-auto flex-1">
-            {[
-              {
-                id: "SPI-26-041",
-                dept: "Instalasi Farmasi",
-                risk: "Tinggi",
-                desc: "Selisih stok fisik vs sistem pada lemari obat Narkotika.",
-              },
-              {
-                id: "SPI-26-039",
-                dept: "Bagian Keuangan",
-                risk: "Sedang",
-                desc: "Klaim BPJS bulan Februari telat disubmit melewati batas maksimal h+4.",
-              },
-              {
-                id: "SPI-26-042",
-                dept: "Pengadaan/Logistik",
-                risk: "Tinggi",
-                desc: "Tender pengadaan alkes 500jt+ tanpa 3 vendor pembanding.",
-              },
-              {
-                id: "SPI-26-038",
-                dept: "Pendaftaran Rawat Jalan",
-                risk: "Rendah",
-                desc: "Waktu tunggu antréan pendaftaran rata-rata > 15 menit pada jam sibuk (08:00 - 10:00).",
-              },
-              {
-                id: "SPI-26-035",
-                dept: "HRD / SDM",
-                risk: "Sedang",
-                desc: "STR Perawat a.n Sari Lestari expired, belum ada bukti pengurusan SIP baru.",
-              },
-            ].map((audit, i) => (
+            {filteredAudits.map((audit, i) => (
               <div
                 key={i}
                 className="p-5 hover:bg-slate-50 transition-colors group cursor-pointer"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import {
   Briefcase,
   FileSignature,
@@ -6,10 +6,24 @@ import {
   Building,
   Search,
   Download,
+  Plus
 } from "lucide-react";
+import { useOfficeStore } from "./store/officeStore";
 
 export default function OfficeContracts() {
-  const contracts = [
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const storeContracts = useOfficeStore(state => state.contracts);
+  const { addContract } = useOfficeStore();
+
+  const contracts = useMemo(() => [
+    ...storeContracts.map((c: any) => ({
+      partner: c.vendor,
+      type: c.type,
+      expiry: c.endDate,
+      status: c.status,
+      category: "Internal/Vendor",
+    })),
     {
       partner: "BPJS Kesehatan",
       type: "MoU Pelayanan JKN",
@@ -38,7 +52,20 @@ export default function OfficeContracts() {
       status: "Expired",
       category: "Perusahaan",
     },
-  ];
+  ], [storeContracts]);
+
+  const handleAddContract = () => {
+    addContract({
+      id: `CTR-${Date.now()}`,
+      vendor: "PT. Tambahan Vendor Baru",
+      type: "Peralatan Medis",
+      startDate: new Date().toISOString().split('T')[0],
+      endDate: "31 Des 2027",
+      status: "Aktif"
+    });
+  };
+
+  const filteredContracts = contracts.filter(c => c.partner.toLowerCase().includes(searchTerm.toLowerCase()) || c.type.toLowerCase().includes(searchTerm.toLowerCase()) || c.category.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
@@ -53,6 +80,12 @@ export default function OfficeContracts() {
             vendor outsourcing.
           </p>
         </div>
+        <button 
+          onClick={handleAddContract}
+          className="flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-colors mt-4 sm:mt-0"
+        >
+          <Plus className="w-4 h-4" /> Tambah Kontrak
+        </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -109,13 +142,15 @@ export default function OfficeContracts() {
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Cari mitra / asuransi..."
               className="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all shadow-sm"
             />
           </div>
         </div>
         <div className="overflow-x-auto flex-1">
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left whitespace-nowrap">
             <thead className="bg-slate-50 text-slate-500 border-b border-slate-200">
               <tr>
                 <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">
@@ -139,7 +174,7 @@ export default function OfficeContracts() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {contracts.map((c, i) => (
+              {filteredContracts.map((c, i) => (
                 <tr
                   key={i}
                   className="hover:bg-slate-50/80 transition-colors group"

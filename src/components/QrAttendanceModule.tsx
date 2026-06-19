@@ -102,9 +102,13 @@ const QrAttendanceModule = ({ user }: { user: any }) => {
                   <td className="px-4 py-3 text-slate-700">
                     {log.date} · {log.time}
                   </td>
-                  <td className="px-4 py-3 text-slate-900 font-medium">{log.name}</td>
+                  <td className="px-4 py-3 text-slate-900 font-medium">
+                    {log.name}
+                  </td>
                   <td className="px-4 py-3 text-slate-500">{log.jabatan}</td>
-                  <td className="px-4 py-3 text-slate-500 capitalize">{log.divisi}</td>
+                  <td className="px-4 py-3 text-slate-500 capitalize">
+                    {log.divisi}
+                  </td>
                   <td className="px-4 py-3">
                     <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 text-[10px] font-medium">
                       {log.status}

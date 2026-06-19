@@ -4,6 +4,8 @@ import { Search, Menu, X, ChevronDown } from "lucide-react";
 import { t } from "../utils/translations";
 import { useLangStore } from "../store/langStore";
 import { useSiteStore } from "../store/siteStore";
+import { POLIKLINIK, DOKTER } from "../data/mockData";
+import toast from "react-hot-toast";
 
 export const Navbar = () => {
   const { lang, setLang } = useLangStore();
@@ -151,10 +153,26 @@ export const Navbar = () => {
     ];
   });
 
+  const publicData = [
+    ...allLinks,
+    ...POLIKLINIK.map((p) => ({
+      title: p,
+      path: "/pelayanan/rawat-jalan",
+      category: "Layanan Poliklinik",
+    })),
+    ...Object.entries(DOKTER).flatMap(([poli, doctors]) =>
+      doctors.map((d) => ({
+        title: d,
+        path: "/jadwal-dokter",
+        category: `Dokter Spesialis (${poli})`,
+      })),
+    ),
+  ];
+
   const searchResults =
     searchQuery.trim() === ""
       ? []
-      : allLinks.filter(
+      : publicData.filter(
           (item) =>
             item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             item.category.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -173,12 +191,13 @@ export const Navbar = () => {
       navigate(path);
       setIsOpen(false);
     } else {
-      alert(
+      toast(
         t(
           lang,
-          "Fitur masih dalam pengembangan",
-          "Feature is still under development",
+          "Akses dialihkan ke portal informasi sekunder staf",
+          "Access redirected to secondary staff information portal",
         ),
+        { icon: "🔒" },
       );
     }
   };
@@ -199,13 +218,13 @@ export const Navbar = () => {
         </div>
         <div className="flex items-center space-x-4">
           <Link
-            to="/portal/pendaftaran"
+            to="/pasien/login"
             className="hover:text-emerald-200 transition-colors"
           >
             {t(lang, "Portal Pasien", "Patient Portal")}
           </Link>
           <Link
-            to="/srm/dashboard"
+            to="/srm/login"
             className="hover:text-emerald-200 transition-colors"
           >
             SIM RS UMLA

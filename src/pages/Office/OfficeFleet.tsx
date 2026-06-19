@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Truck,
   Search,
@@ -9,40 +9,79 @@ import {
   Car,
   AlertTriangle,
 } from "lucide-react";
+import toast from "react-hot-toast";
+import { useOfficeStore } from "./store/officeStore";
 
 export default function OfficeFleet() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  
+  const storeFleet = useOfficeStore(state => state.fleet);
+  const { addFleet } = useOfficeStore();
 
-  const vehicles = [
-    {
-      id: "S-701",
-      type: "Ambulans Rujukan",
-      plate: "S 1902 AL",
-      status: "Standby",
-      loc: "IGD Utama",
-    },
-    {
-      id: "S-702",
-      type: "Ambulans Jenazah",
-      plate: "S 1910 AL",
-      status: "Sedang Tugas",
-      loc: "Perjalanan ke Tuban",
-    },
-    {
-      id: "S-703",
-      type: "Mobil Dinas Direksi (Innova)",
-      plate: "S 10 AL",
-      status: "Standby",
-      loc: "Parkir VIP",
-    },
-    {
-      id: "S-704",
-      type: "Mobil Operasional (Avanza)",
-      plate: "S 1550 AL",
-      status: "Maintenance",
-      loc: "Bengkel Resmi",
-    },
-  ];
+  const handleBooking = (e: any) => {
+    e.preventDefault();
+    addFleet({
+      id: `REQ-${Date.now()}`,
+      type: "Mobil Operasional Tambahan",
+      plate: "Pending",
+      status: "Terjadwal",
+      loc: "Pool Utama (Request Baru)"
+    });
+    setIsModalOpen(false);
+    toast.success("Request Booking Mobil Berhasil Disimpan");
+  };
+
+  const vehicles = useMemo(
+    () => [
+      ...storeFleet.map((f: any) => ({
+        id: f.id,
+        type: f.type,
+        plate: f.plate,
+        status: f.status === "Tersedia" ? "Standby" : f.status,
+        loc: f.driver ? `Dipegang oleh ${f.driver}` : "Pool"
+      })),
+      {
+        id: "S-701",
+        type: "Ambulans Rujukan",
+        plate: "S 1902 AL",
+        status: "Standby",
+        loc: "IGD Utama",
+      },
+      {
+        id: "S-702",
+        type: "Ambulans Jenazah",
+        plate: "S 1910 AL",
+        status: "Sedang Tugas",
+        loc: "Perjalanan ke Tuban",
+      },
+      {
+        id: "S-703",
+        type: "Mobil Dinas Direksi (Innova)",
+        plate: "S 10 AL",
+        status: "Standby",
+        loc: "Parkir VIP",
+      },
+      {
+        id: "S-704",
+        type: "Mobil Operasional (Avanza)",
+        plate: "S 1550 AL",
+        status: "Maintenance",
+        loc: "Bengkel Resmi",
+      },
+    ],
+    [storeFleet],
+  );
+
+  const filteredVehicles = useMemo(() => {
+    if (!searchTerm) return vehicles;
+    return vehicles.filter(
+      (v) =>
+        v.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.plate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.id.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [vehicles, searchTerm]);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
@@ -76,6 +115,8 @@ export default function OfficeFleet() {
               <div className="relative w-full sm:max-w-xs">
                 <input
                   type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Cari nopol atau jenis..."
                   className="w-full pl-9 pr-4 py-2 border border-slate-200 bg-white rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm"
                 />
@@ -98,7 +139,7 @@ export default function OfficeFleet() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {vehicles.map((v, i) => (
+                  {filteredVehicles.map((v, i) => (
                     <tr
                       key={i}
                       className="hover:bg-slate-50/80 transition-colors group"
@@ -136,6 +177,16 @@ export default function OfficeFleet() {
                       </td>
                     </tr>
                   ))}
+                  {filteredVehicles.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={3}
+                        className="px-6 py-12 text-center text-slate-500 italic"
+                      >
+                        Tidak ada kendaraan yang cocok dengan pencarian.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -271,12 +322,7 @@ export default function OfficeFleet() {
                 Batal
               </button>
               <button
-                onClick={() => {
-                  alert(
-                    "Pengajuan berhasil! Menunggu persetujuan Bagian Umum.",
-                  );
-                  setIsModalOpen(false);
-                }}
+                onClick={handleBooking}
                 className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm hover:bg-emerald-700 shadow-sm transition-transform active:scale-95 flex items-center gap-2"
               >
                 <CheckCircle className="w-4 h-4" /> Kirim Pengajuan

@@ -14,9 +14,10 @@ import {
 } from "lucide-react";
 import { useOfficeStore } from "./store/officeStore";
 import { getAccessToken } from "./store/auth";
+import toast from "react-hot-toast";
 
 export default function OfficeNotaDinas() {
-  const { userRole } = useOfficeStore();
+  const { userRole, notaDinas, addNotaDinas } = useOfficeStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -25,7 +26,7 @@ export default function OfficeNotaDinas() {
   const [perihal, setPerihal] = useState("");
   const [isi, setIsi] = useState("");
 
-  const [drafts, setDrafts] = useState([
+  const combinedDrafts = [
     {
       id: "ND-001",
       title: "Pengajuan Penambahan SDM Perawat",
@@ -50,10 +51,12 @@ export default function OfficeNotaDinas() {
       to: "Direktur SDM",
       driveId: null,
     },
-  ]);
+    ...notaDinas
+  ];
+  const [drafts, setDrafts] = useState(combinedDrafts);
 
   const handleSimpanKeDrive = async () => {
-    if (!perihal || !isi) return alert("Isi perihal dan isi nota dinas!");
+    if (!perihal || !isi) return toast.error("Isi perihal dan isi nota dinas!");
 
     setIsUploading(true);
     try {
@@ -101,12 +104,13 @@ export default function OfficeNotaDinas() {
       };
 
       setDrafts([newDraft, ...drafts]);
+      addNotaDinas(newDraft);
       setIsModalOpen(false);
       setPerihal("");
       setIsi("");
-      alert(`Berhasil disimpan ke Google Drive dengan ID: ${data.id}`);
+      toast.success(`Berhasil disimpan ke Google Drive dengan ID: ${data.id}`);
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     } finally {
       setIsUploading(false);
     }
@@ -165,9 +169,9 @@ export default function OfficeNotaDinas() {
           d.id === draftInfo.id ? { ...d, status: "Pending" } : d,
         ),
       );
-      alert("Email notifikasi berhasil dikirim melalui Gmail Anda!");
+      toast.success("Email notifikasi berhasil dikirim melalui Gmail Anda!");
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

@@ -11,29 +11,21 @@ import {
   Plus,
 } from "lucide-react";
 import { useOfficeStore } from "./store/officeStore";
+import toast from "react-hot-toast";
 
 export default function OfficeESS() {
-  const { userRole } = useOfficeStore();
+  const { userRole, currentUser, leaveRequests, addLeaveRequest } = useOfficeStore();
   const [isCutiModalOpen, setIsCutiModalOpen] = useState(false);
 
-  const [cutiRequests, setCutiRequests] = useState([
-    {
-      id: "CT-2601",
-      type: "Cuti Tahunan",
-      startDate: "2026-06-10",
-      endDate: "2026-06-12",
-      status: "Disetujui",
-      approver: "Ns. Rina (Kepala Ruang)",
-    },
-    {
-      id: "CT-2602",
-      type: "Cuti Sakit",
-      startDate: "2026-04-05",
-      endDate: "2026-04-06",
-      status: "Selesai",
-      approver: "HRD",
-    },
-  ]);
+  // Filter leaveRequests for current user mock (for ESS view)
+  const cutiRequests = leaveRequests.filter(r => currentUser ? r.userId === currentUser.id : true).map(r => ({
+    id: r.id,
+    type: r.type,
+    startDate: r.duration.split(' - ')[0] || r.startDate || r.submittedDate,
+    endDate: r.duration.split(' - ')[1] || r.endDate || r.submittedDate,
+    status: r.status,
+    approver: r.approver || "Menunggu HRD",
+  }));
 
   const [formData, setFormData] = useState({
     type: "Cuti Tahunan",
@@ -45,17 +37,21 @@ export default function OfficeESS() {
   const handleAjukanCuti = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.startDate || !formData.endDate || !formData.reason) {
-      return alert("Mohon lengkapi semua field!");
+      return toast.error("Mohon lengkapi semua field!");
     }
     const newRequest = {
-      id: `CT-260${cutiRequests.length + 3}`,
+      id: `CT-${Date.now()}`,
+      userId: currentUser?.id || "KARYAWAN-ESS",
+      userName: currentUser?.name || "Pegawai Cuti",
+      submittedDate: new Date().toLocaleDateString("id-ID", { day: 'numeric', month: 'short', year: 'numeric' }),
       type: formData.type,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      status: "Menunggu Persetujuan",
+      duration: `${formData.startDate} - ${formData.endDate}`,
+      days: 1, // simplified
+      reason: formData.reason,
+      status: "Menunggu",
       approver: "Menunggu Kepala Ruang",
     };
-    setCutiRequests([newRequest, ...cutiRequests]);
+    addLeaveRequest(newRequest);
     setIsCutiModalOpen(false);
     setFormData({
       type: "Cuti Tahunan",
@@ -335,7 +331,7 @@ export default function OfficeESS() {
                   </div>
                   <button
                     onClick={() =>
-                      alert(
+                      toast(
                         `Mengunduh Slip Gaji ${p.month} ${p.year} PDF terenkripsi NIK.`,
                       )
                     }

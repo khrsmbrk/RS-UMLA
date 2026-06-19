@@ -1,20 +1,26 @@
+import { secureLocalStorage } from "../../utils/crypto";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { EMPLOYEES } from "../../data/portalData";
 import { ShieldCheck } from "lucide-react";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [empId, setEmpId] = useState("");
+  const [empPassword, setEmpPassword] = useState("");
   const [selectedEmpId, setSelectedEmpId] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedEmpId) return;
+    if (!empId || !empPassword) return;
 
-    const employee = EMPLOYEES.find((e) => e.id === selectedEmpId);
+    const employee = EMPLOYEES.find((e) => e.id === empId);
     if (employee) {
-      localStorage.setItem("karyawan_session", JSON.stringify(employee));
+      secureLocalStorage.setItem("karyawan_session", JSON.stringify(employee));
       navigate("/karyawan/dashboard");
+    } else {
+      toast.error("ID Karyawan atau Kata Sandi salah.");
     }
   };
 
@@ -30,35 +36,80 @@ const LoginPage = () => {
           Portal Karyawan
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
-          Simulasi Sistem Informasi SDM Rumah Sakit Universitas Muhammadiyah Lamongan
+          Simulasi Sistem Informasi SDM Rumah Sakit Universitas Muhammadiyah
+          Lamongan
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-2xl sm:px-10 border border-slate-100">
           <form className="space-y-6" onSubmit={handleLogin}>
+            <div className="mb-2 bg-blue-50 border border-blue-200 p-3 rounded-lg flex flex-col gap-2 relative">
+              <div className="text-xs font-bold text-blue-800 flex items-center gap-1">
+                Login Cepat (Simulasi)
+              </div>
+              <select
+                className="w-full border-blue-200 bg-white rounded p-2 text-sm text-slate-700 outline-none focus:ring-1 focus:ring-blue-500"
+                onChange={(e) => {
+                  const emp = EMPLOYEES.find((x) => x.id === e.target.value);
+                  if (emp) {
+                    setEmpId(emp.id);
+                    setEmpPassword("password123");
+                    setSelectedEmpId(emp.id);
+                  } else {
+                    setEmpId("");
+                    setEmpPassword("");
+                    setSelectedEmpId("");
+                  }
+                }}
+                value={selectedEmpId}
+              >
+                <option value="">-- Pilih Karyawan --</option>
+                {EMPLOYEES.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.name} - {emp.jabatan} ({emp.id})
+                  </option>
+                ))}
+              </select>
+              <p className="text-[10px] text-blue-600">
+                Pilih karyawan untuk mengisi ID & Kata Sandi otomatis
+              </p>
+            </div>
+
             <div>
               <label
-                htmlFor="employee"
+                htmlFor="empId"
                 className="block text-sm font-medium text-slate-700"
               >
-                Pilih Akun Simulasi
+                ID Karyawan / NIK
               </label>
               <div className="mt-1">
-                <select
-                  id="employee"
-                  value={selectedEmpId}
-                  onChange={(e) => setSelectedEmpId(e.target.value)}
+                <input
+                  id="empId"
+                  value={empId}
+                  onChange={(e) => setEmpId(e.target.value)}
                   className="appearance-none block w-full px-3 py-3 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   required
-                >
-                  <option value="">-- Pilih Karyawan --</option>
-                  {EMPLOYEES.map((emp) => (
-                    <option key={emp.id} value={emp.id}>
-                      {emp.name} ({emp.jabatan})
-                    </option>
-                  ))}
-                </select>
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="empPassword"
+                className="block text-sm font-medium text-slate-700"
+              >
+                Kata Sandi
+              </label>
+              <div className="mt-1">
+                <input
+                  type="password"
+                  id="empPassword"
+                  value={empPassword}
+                  onChange={(e) => setEmpPassword(e.target.value)}
+                  className="appearance-none block w-full px-3 py-3 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  required
+                />
               </div>
             </div>
 

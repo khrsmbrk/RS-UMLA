@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Search, X, Check } from 'lucide-react';
-import { useSRMStore } from '../store/srmStore';
+import React, { useState } from "react";
+import { Search, X, Check } from "lucide-react";
+import { useSRMStore } from "../store/srmStore";
 
 interface MasterDataModalProps {
   type: string;
@@ -10,16 +10,22 @@ interface MasterDataModalProps {
   title: string;
 }
 
-export const MasterDataModal: React.FC<MasterDataModalProps> = ({ type, isOpen, onClose, onSelect, title }) => {
-  const masterData = useSRMStore(state => state.masterData);
+export const MasterDataModal: React.FC<MasterDataModalProps> = ({
+  type,
+  isOpen,
+  onClose,
+  onSelect,
+  title,
+}) => {
+  const masterData = useSRMStore((state) => state.masterData);
   const data = masterData[type] || [];
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   if (!isOpen) return null;
 
-  const filteredData = data.filter(item => {
-    return Object.values(item).some(val => 
-      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = data.filter((item) => {
+    return Object.values(item).some((val) =>
+      String(val).toLowerCase().includes(searchTerm.toLowerCase()),
     );
   });
 
@@ -30,11 +36,14 @@ export const MasterDataModal: React.FC<MasterDataModalProps> = ({ type, isOpen, 
           <h2 className="font-bold text-slate-700 flex items-center gap-2">
             <Search className="w-5 h-5" /> Cari Data {title}
           </h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-red-500">
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-red-500"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
-        
+
         <div className="p-4 border-b border-slate-200">
           <input
             type="text"
@@ -55,23 +64,43 @@ export const MasterDataModal: React.FC<MasterDataModalProps> = ({ type, isOpen, 
             <table className="w-full text-sm text-left">
               <thead className="bg-slate-100 text-slate-700 sticky top-0">
                 <tr>
-                  <th className="px-4 py-2 border-b border-slate-300 w-12 text-center">Pilih</th>
-                  {Object.keys(filteredData[0]).filter(k => k !== 'id').map(key => (
-                    <th key={key} className="px-4 py-2 border-b border-slate-300 uppercase">{key}</th>
-                  ))}
+                  <th className="px-4 py-2 border-b border-slate-300 w-12 text-center">
+                    Pilih
+                  </th>
+                  {Object.keys(filteredData[0])
+                    .filter((k) => k !== "id")
+                    .map((key) => (
+                      <th
+                        key={key}
+                        className="px-4 py-2 border-b border-slate-300 uppercase"
+                      >
+                        {key}
+                      </th>
+                    ))}
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map(item => (
-                  <tr key={item.id} className="border-b border-slate-200 hover:bg-blue-50 cursor-pointer" onClick={() => onSelect(item)}>
+                {filteredData.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="border-b border-slate-200 hover:bg-blue-50 cursor-pointer"
+                    onClick={() => onSelect(item)}
+                  >
                     <td className="px-4 py-2 border-r border-slate-300 text-center">
-                       <button className="bg-blue-100 text-blue-600 p-1 rounded hover:bg-blue-600 hover:text-white transition-colors">
-                          <Check className="w-4 h-4" />
-                       </button>
+                      <button className="bg-blue-100 text-blue-600 p-1 rounded hover:bg-blue-600 hover:text-white transition-colors">
+                        <Check className="w-4 h-4" />
+                      </button>
                     </td>
-                    {Object.keys(item).filter(k => k !== 'id').map(key => (
-                      <td key={key} className="px-4 py-2 border-r border-slate-300">{item[key]}</td>
-                    ))}
+                    {Object.keys(item)
+                      .filter((k) => k !== "id")
+                      .map((key) => (
+                        <td
+                          key={key}
+                          className="px-4 py-2 border-r border-slate-300"
+                        >
+                          {item[key]}
+                        </td>
+                      ))}
                   </tr>
                 ))}
               </tbody>
@@ -79,7 +108,7 @@ export const MasterDataModal: React.FC<MasterDataModalProps> = ({ type, isOpen, 
           )}
         </div>
         <div className="p-4 border-t border-slate-200 bg-slate-50 flex justify-end">
-          <button 
+          <button
             onClick={onClose}
             className="bg-slate-300 hover:bg-slate-400 text-slate-800 px-4 py-2 rounded text-sm font-bold"
           >

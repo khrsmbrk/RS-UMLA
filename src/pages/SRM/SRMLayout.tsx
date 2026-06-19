@@ -6,6 +6,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useSRMStore } from '../../store/srmStore';
+import toast from 'react-hot-toast';
 
 const SRMLayout = () => {
   const location = useLocation();
@@ -20,7 +21,7 @@ const SRMLayout = () => {
   const showVersion = () => {
     const date = new Date();
     const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    alert(`Versi ${date.getFullYear()}.${months[date.getMonth()]}.${date.getDate()}\nBuilder by Kharizer`);
+    toast(`Versi ${date.getFullYear()}.${months[date.getMonth()]}.${date.getDate()}\nBuilder by Kharizer`, { duration: 4000 });
   };
 
   const toggleMenu = (menu: string) => {
@@ -45,9 +46,9 @@ const SRMLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-sm" onClick={() => activeMenu && closeMenu()}>
+    <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-sm print:bg-white" onClick={() => activeMenu && closeMenu()}>
       {/* Top Menu Bar */}
-      <div className="bg-slate-50 border-b border-slate-300 flex items-center px-2 py-1 text-xs">
+      <div className="bg-slate-50 border-b border-slate-300 flex items-center px-2 py-1 text-xs print:hidden">
         <Link 
           to="/srm/wa-reminder"
           className="px-3 py-1 hover:bg-blue-100 rounded"
@@ -89,6 +90,27 @@ const SRMLayout = () => {
                 <span>Keluar</span>
                 <span className="text-slate-400 text-[10px]">Ctrl+X</span>
               </Link>
+            </div>
+          )}
+        </div>
+
+        <div className="relative">
+          <button 
+             className={`px-3 py-1 hover:bg-blue-100 rounded flex items-center ${activeMenu === 'modul' ? 'bg-blue-200' : ''}`}
+             onClick={(e) => { e.stopPropagation(); toggleMenu('modul'); }}
+          >
+            Modul Pelayanan
+          </button>
+          {activeMenu === 'modul' && (
+            <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-slate-300 shadow-lg z-50 py-1">
+              <Link to="/srm/rawat-jalan" className="block px-4 py-1.5 hover:bg-blue-100">Poli / Rawat Jalan</Link>
+              <Link to="/srm/rawat-inap" className="block px-4 py-1.5 hover:bg-blue-100">Bangsal / Rawat Inap</Link>
+              <Link to="/srm/igd" className="block px-4 py-1.5 hover:bg-blue-100">IGD</Link>
+              <Link to="/srm/apotek" className="block px-4 py-1.5 hover:bg-blue-100">Apotek / Farmasi</Link>
+              <Link to="/srm/laboratorium" className="block px-4 py-1.5 hover:bg-blue-100">Laboratorium</Link>
+              <Link to="/srm/radiologi" className="block px-4 py-1.5 hover:bg-blue-100">Radiologi</Link>
+              <Link to="/srm/kasir" className="block px-4 py-1.5 hover:bg-blue-100">Kasir / Billing</Link>
+              <Link to="/srm/logistik" className="block px-4 py-1.5 hover:bg-blue-100">Logistik Gudang</Link>
             </div>
           )}
         </div>
@@ -148,7 +170,7 @@ const SRMLayout = () => {
       </div>
 
       {/* Toolbar */}
-      <div className="bg-slate-100 border-b border-slate-300 flex items-center px-2 py-2 overflow-x-auto">
+      <div className="bg-slate-100 border-b border-slate-300 flex items-center px-2 py-2 overflow-x-auto print:hidden">
         {toolbarItems.map((item, index) => {
           const isActive = location.pathname.startsWith(item.path);
           return (
@@ -169,7 +191,7 @@ const SRMLayout = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-auto bg-slate-50 p-4">
+      <div className="flex-1 overflow-auto bg-slate-50 p-4 print:p-0 print:bg-white print:overflow-visible">
         <Outlet />
       </div>
     </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Edit, Trash2, FileSpreadsheet, XCircle, X } from 'lucide-react';
 import { useSRMStore, Patient } from '../../store/srmStore';
+import toast from 'react-hot-toast';
 
 const SRMPasien = () => {
   const navigate = useNavigate();
@@ -92,7 +93,7 @@ const SRMPasien = () => {
 
   const handleExportExcel = () => {
     if (filteredPatients.length === 0) {
-      alert('Tidak ada data pasien untuk diexport.');
+      toast.error('Tidak ada data pasien untuk diexport.');
       return;
     }
     const headers = ["NO", "NO.RM", "NIK KTP", "NAMA LENGKAP", "ISTRI", "PEKERJAAN", "KOTA KELAHIRAN", "TGL LAHIR", "JENIS KELAMIN", "STATUS PERNIKAHAN", "RIWAYAT ALERGI"];

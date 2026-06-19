@@ -1,7 +1,24 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Droplet, Search, Box, Thermometer, UserPlus } from "lucide-react";
+import { useSRMStore } from "../../store/srmStore";
 
 export default function OfficeBloodBank() {
+  const patients = useSRMStore((state) => state.patients);
+
+  const requests = useMemo(() => {
+    return patients.slice(0, 4).map((p, i) => {
+      const isReady = i % 2 === 0;
+      return {
+        p: p.namaLengkap,
+        r: i === 0 ? "ICU" : i === 1 ? "Kamar Bersalin" : "Instalasi Bedah",
+        c: i % 2 === 0 ? "Packed Red Cell (PRC)" : "Whole Blood (WB)",
+        g: i % 3 === 0 ? "O (+)" : "B (+)",
+        n: (i % 3) + 1,
+        stat: isReady ? "Siap Diambil" : "Proses Crossmatch",
+      };
+    });
+  }, [patients]);
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm shrink-0">
@@ -41,10 +58,14 @@ export default function OfficeBloodBank() {
       </div>
 
       <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-        <div className="p-5 border-b border-slate-100 bg-slate-50/50">
-          <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm">
+        <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <h3 className="font-black text-slate-800 uppercase tracking-widest text-sm flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>{" "}
             Permintaan Transfusi Aktif
           </h3>
+          <span className="text-[10px] font-black tracking-widest uppercase bg-rose-100 text-rose-700 px-2 py-0.5 rounded border border-rose-200">
+            Live Data
+          </span>
         </div>
         <table className="w-full text-sm text-left">
           <thead className="bg-white text-slate-500 border-b border-slate-200">
@@ -67,25 +88,8 @@ export default function OfficeBloodBank() {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {[
-              {
-                p: "Tn. Amiruddin",
-                r: "ICU",
-                c: "Packed Red Cell (PRC)",
-                g: "B (+)",
-                n: 2,
-                stat: "Proses Crossmatch",
-              },
-              {
-                p: "Ny. Wahyuni",
-                r: "Kamar Besalin",
-                c: "Whole Blood (WB)",
-                g: "O (+)",
-                n: 1,
-                stat: "Siap Diambil",
-              },
-            ].map((req, i) => (
-              <tr key={i} className="hover:bg-slate-50">
+            {requests.map((req, i) => (
+              <tr key={i} className="hover:bg-slate-50 transition-colors">
                 <td className="px-5 py-5">
                   <div className="font-bold text-slate-800">{req.p}</div>
                   <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">
@@ -94,7 +98,7 @@ export default function OfficeBloodBank() {
                 </td>
                 <td className="px-5 py-5 font-bold text-slate-600">{req.c}</td>
                 <td className="px-5 py-5">
-                  <span className="bg-rose-100 text-rose-700 px-3 py-1 font-black text-lg rounded-lg border border-rose-200">
+                  <span className="bg-rose-100 text-rose-700 px-3 py-1 font-black text-lg rounded-lg border border-rose-200 shadow-sm">
                     {req.g}
                   </span>
                 </td>
@@ -114,6 +118,16 @@ export default function OfficeBloodBank() {
                 </td>
               </tr>
             ))}
+            {requests.length === 0 && (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="py-12 text-center text-slate-500 italic"
+                >
+                  Tidak ada permintaan aktif.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

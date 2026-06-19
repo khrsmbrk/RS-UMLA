@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BookOpen,
   Video,
@@ -8,9 +8,37 @@ import {
   PlayCircle,
   FileText,
   Download,
+  Search,
 } from "lucide-react";
 
 export default function OfficeELearning() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const courses = [
+    {
+      title: "Pencegahan & Pengendalian Infeksi (PPI) Dasar",
+      cat: "Mandatory",
+      time: "120 Menit",
+    },
+    {
+      title: "Komunikasi Efektif (SBAR) Antar PPA",
+      cat: "Soft Skill",
+      time: "90 Menit",
+    },
+    {
+      title: "Manajemen Nyeri Terpadu & Farmakoterapi",
+      cat: "Klinis",
+      time: "150 Menit",
+    },
+    {
+      title: "Peningkatan Mutu & Keselamatan Pasien (PMKP)",
+      cat: "Mandatory",
+      time: "180 Menit",
+    },
+  ];
+
+  const filteredCourses = courses.filter(c => c.title.toLowerCase().includes(searchTerm.toLowerCase()) || c.cat.toLowerCase().includes(searchTerm.toLowerCase()));
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
@@ -19,7 +47,7 @@ export default function OfficeELearning() {
             <BookOpen className="w-6 h-6 text-indigo-600" /> E-Learning & CME
             (Diklat RS)
           </h1>
-          <p className="text-slate-500 mt-1">
+          <p className="text-slate-500 mt-1 text-sm">
             Pusat pelatihan internal, peningkatan kompetensi, dan sertifikat
             Nakes (Mandatory Training).
           </p>
@@ -73,33 +101,23 @@ export default function OfficeELearning() {
           </div>
 
           <div>
-            <h3 className="font-black text-slate-800 text-lg mb-4 flex items-center gap-2 uppercase tracking-widest text-xs">
-              <BookOpen className="w-5 h-5 text-slate-400" /> Katalog Pelatihan
-              Internal
-            </h3>
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
+                <h3 className="font-black text-slate-800 text-lg flex items-center gap-2 uppercase tracking-widest text-xs">
+                  <BookOpen className="w-5 h-5 text-slate-400" /> Katalog Pelatihan Internal
+                </h3>
+               <div className="relative w-full sm:w-64">
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      placeholder="Cari Pelatihan..."
+                      className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm"
+                    />
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+               </div>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
-                {
-                  title: "Pencegahan & Pengendalian Infeksi (PPI) Dasar",
-                  cat: "Mandatory",
-                  time: "120 Menit",
-                },
-                {
-                  title: "Komunikasi Efektif (SBAR) Antar PPA",
-                  cat: "Soft Skill",
-                  time: "90 Menit",
-                },
-                {
-                  title: "Manajemen Nyeri Terpadu & Farmakoterapi",
-                  cat: "Klinis",
-                  time: "150 Menit",
-                },
-                {
-                  title: "Peningkatan Mutu & Keselamatan Pasien (PMKP)",
-                  cat: "Mandatory",
-                  time: "180 Menit",
-                },
-              ].map((c, i) => (
+              {filteredCourses.map((c, i) => (
                 <div
                   key={i}
                   className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-md transition-all flex flex-col group/card"
@@ -122,6 +140,11 @@ export default function OfficeELearning() {
                   </button>
                 </div>
               ))}
+               {filteredCourses.length === 0 && (
+                  <div className="col-span-2 p-12 bg-white rounded-xl border border-slate-200 text-center text-slate-500 italic shadow-sm">
+                      Pelatihan tidak ditemukan.
+                  </div>
+              )}
             </div>
           </div>
         </div>

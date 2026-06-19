@@ -95,6 +95,16 @@ const routeMap: Record<
     category: "Menu Utama",
     icon: <Info className="w-16 h-16 text-emerald-400 mb-6" />,
   },
+  "/kebijakan-privasi": {
+    title: "Kebijakan Privasi",
+    category: "Informasi",
+    icon: <Info className="w-16 h-16 text-emerald-400 mb-6" />,
+  },
+  "/syarat-ketentuan": {
+    title: "Syarat & Ketentuan",
+    category: "Informasi",
+    icon: <Info className="w-16 h-16 text-emerald-400 mb-6" />,
+  },
 };
 
 export default function GenericPage() {
@@ -172,11 +182,10 @@ export default function GenericPage() {
             <Construction className="w-12 h-12" />
           </div>
           <h2 className="text-3xl font-bold text-slate-800 mb-4">
-            Sedang Dalam Pengembangan
+            Informasi Sedang Diperbarui
           </h2>
           <p className="text-slate-500 max-w-md text-lg">
-            Halaman <strong>{pathInfo.title}</strong> sedang dalam tahap
-            penyempurnaan fitur dan konten oleh tim IT dan Humas RS UMLA.
+            Halaman <strong>{pathInfo.title}</strong> sedang dalam peninjauan berkala oleh tim operasional untuk memastikan standar pelayanan terbaik.
           </p>
         </div>
       </main>

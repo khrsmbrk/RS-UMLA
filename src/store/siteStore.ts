@@ -34,6 +34,9 @@ interface SiteState {
   deleteNews: (id: string) => void;
 }
 
+import { createJSONStorage } from 'zustand/middleware';
+import { secureLocalStorage } from '../utils/crypto';
+
 export const useSiteStore = create<SiteState>()(
   persist(
     (set) => ({
@@ -63,6 +66,7 @@ export const useSiteStore = create<SiteState>()(
     }),
     {
       name: 'site-settings-v3',
+      storage: createJSONStorage(() => secureLocalStorage),
     }
   )
 );

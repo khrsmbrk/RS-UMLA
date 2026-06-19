@@ -4,14 +4,31 @@ import { t } from "../utils/translations";
 import { Link } from "react-router-dom";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
-import { 
-  PieChart, Pie, Cell, Tooltip as RechartsTooltip, Legend, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip as RechartsTooltip,
+  Legend,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
 } from "recharts";
 import { Users } from "lucide-react";
 
-const COLORS = ['#059669', '#3b82f6', '#f59e0b', '#e11d48', '#8b5cf6', '#10b981', '#0ea5e9'];
-const GENDER_COLORS = ['#3b82f6', '#e11d48'];
+const COLORS = [
+  "#059669",
+  "#3b82f6",
+  "#f59e0b",
+  "#e11d48",
+  "#8b5cf6",
+  "#10b981",
+  "#0ea5e9",
+];
+const GENDER_COLORS = ["#3b82f6", "#e11d48"];
 
 const statusPegawaiData = [
   { name: "Pegawai Tetap Persyarikatan", value: 345 },
@@ -53,9 +70,15 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const Table = ({ title, data }: { title: string, data: {name: string, value: number}[] }) => {
+const Table = ({
+  title,
+  data,
+}: {
+  title: string;
+  data: { name: string; value: number }[];
+}) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
-  
+
   return (
     <div className="w-full bg-white rounded-xl border border-slate-200 overflow-hidden mt-4 lg:mt-0">
       <div className="bg-emerald-50 py-3 px-4 border-b border-slate-200">
@@ -64,16 +87,24 @@ const Table = ({ title, data }: { title: string, data: {name: string, value: num
       <table className="w-full text-sm">
         <thead className="bg-slate-50 border-b border-slate-200">
           <tr>
-            <th className="py-2 px-4 text-left font-medium text-slate-600">Kategori</th>
-            <th className="py-2 px-4 text-right font-medium text-slate-600">Jumlah</th>
-            <th className="py-2 px-4 text-right font-medium text-slate-600">Persentase</th>
+            <th className="py-2 px-4 text-left font-medium text-slate-600">
+              Kategori
+            </th>
+            <th className="py-2 px-4 text-right font-medium text-slate-600">
+              Jumlah
+            </th>
+            <th className="py-2 px-4 text-right font-medium text-slate-600">
+              Persentase
+            </th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
           {data.map((item, index) => (
             <tr key={index} className="hover:bg-slate-50 transition-colors">
               <td className="py-3 px-4 text-slate-700">{item.name}</td>
-              <td className="py-3 px-4 text-right text-slate-700 font-medium">{item.value}</td>
+              <td className="py-3 px-4 text-right text-slate-700 font-medium">
+                {item.value}
+              </td>
               <td className="py-3 px-4 text-right text-slate-600">
                 {((item.value / total) * 100).toFixed(1)}%
               </td>
@@ -152,7 +183,6 @@ export default function SDM() {
       </section>
 
       <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 w-full space-y-16">
-        
         {/* Status Pegawai */}
         <section>
           <div className="grid lg:grid-cols-2 gap-8 items-center bg-slate-50 p-6 rounded-2xl border border-slate-100">
@@ -169,7 +199,10 @@ export default function SDM() {
                     dataKey="value"
                   >
                     {statusPegawaiData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <RechartsTooltip content={<CustomTooltip />} />
@@ -177,7 +210,10 @@ export default function SDM() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <Table title="Total SDM Berdasarkan Status Pegawai" data={statusPegawaiData} />
+            <Table
+              title="Total SDM Berdasarkan Status Pegawai"
+              data={statusPegawaiData}
+            />
           </div>
         </section>
 
@@ -197,7 +233,10 @@ export default function SDM() {
                     dataKey="value"
                   >
                     {jenisTenagaData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <RechartsTooltip content={<CustomTooltip />} />
@@ -205,7 +244,10 @@ export default function SDM() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <Table title="Total SDM Berdasarkan Jenis Tenaga" data={jenisTenagaData} />
+            <Table
+              title="Total SDM Berdasarkan Jenis Tenaga"
+              data={jenisTenagaData}
+            />
           </div>
         </section>
 
@@ -218,19 +260,43 @@ export default function SDM() {
                   data={pendidikanData}
                   margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} angle={-25} textAnchor="end" />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
-                  <RechartsTooltip content={<CustomTooltip />} cursor={{fill: '#f1f5f9'}} />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="#E2E8F0"
+                  />
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#64748b" }}
+                    angle={-25}
+                    textAnchor="end"
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#64748b" }}
+                  />
+                  <RechartsTooltip
+                    content={<CustomTooltip />}
+                    cursor={{ fill: "#f1f5f9" }}
+                  />
                   <Bar dataKey="value" fill="#059669" radius={[4, 4, 0, 0]}>
                     {pendidikanData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <Table title="Total SDM Berdasarkan Pendidikan" data={pendidikanData} />
+            <Table
+              title="Total SDM Berdasarkan Pendidikan"
+              data={pendidikanData}
+            />
           </div>
         </section>
 
@@ -250,7 +316,10 @@ export default function SDM() {
                     dataKey="value"
                   >
                     {genderData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={GENDER_COLORS[index % GENDER_COLORS.length]} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={GENDER_COLORS[index % GENDER_COLORS.length]}
+                      />
                     ))}
                   </Pie>
                   <RechartsTooltip content={<CustomTooltip />} />
@@ -258,13 +327,22 @@ export default function SDM() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <Table title="Total SDM Berdasarkan Jenis Kelamin" data={genderData} />
+            <Table
+              title="Total SDM Berdasarkan Jenis Kelamin"
+              data={genderData}
+            />
           </div>
         </section>
 
         <div className="text-center pt-8 border-t border-slate-200">
           <p className="text-sm text-slate-500">
-            <strong>Sumber:</strong> Bagian Sumber Daya Manusia RS UMLA (Data Simulasi Per {new Date().toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })})
+            <strong>Sumber:</strong> Bagian Sumber Daya Manusia RS UMLA (Data
+            Simulasi Per{" "}
+            {new Date().toLocaleDateString("id-ID", {
+              month: "long",
+              year: "numeric",
+            })}
+            )
           </p>
         </div>
       </main>

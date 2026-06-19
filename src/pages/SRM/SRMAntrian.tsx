@@ -11,11 +11,11 @@ import {
   VolumeX,
   MonitorPlay,
   Printer,
-  MessageCircle
+  MessageCircle,
 } from "lucide-react";
 import { useSRMStore } from "../../store/srmStore";
 
-import SRMAntrianTV from './SRMAntrianTV';
+import SRMAntrianTV from "./SRMAntrianTV";
 
 const SRMAntrian = () => {
   const queueState = useSRMStore((state) => state.queueToday);
@@ -29,8 +29,10 @@ const SRMAntrian = () => {
   const [isSoundEnabled, setIsSoundEnabled] = useState(true);
   const [newPatientRM, setNewPatientRM] = useState("");
   const [currentTime, setCurrentTime] = useState(new Date());
-  
-  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  const [availableVoices, setAvailableVoices] = useState<
+    SpeechSynthesisVoice[]
+  >([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState<string>("");
   const [isFullscreenTV, setIsFullscreenTV] = useState(false);
 
@@ -43,26 +45,30 @@ const SRMAntrian = () => {
     return (
       <div className="fixed inset-0 z-[9999] bg-slate-900 overflow-hidden w-screen h-screen">
         <div className="absolute top-4 right-4 z-[10000] flex gap-2">
-          <button 
-            onClick={() => document.documentElement.requestFullscreen().catch(e => console.log(e))}
+          <button
+            onClick={() =>
+              document.documentElement
+                .requestFullscreen()
+                .catch((e) => console.log(e))
+            }
             className="bg-black/50 hover:bg-black/70 text-white rounded px-3 py-1.5 text-sm font-bold backdrop-blur transition hidden md:block"
           >
             Fullscreen OS
           </button>
-          <button 
+          <button
             onClick={() => {
               if (document.fullscreenElement) {
-                document.exitFullscreen().catch(e => console.log(e));
+                document.exitFullscreen().catch((e) => console.log(e));
               }
               setIsFullscreenTV(false);
-            }} 
+            }}
             className="bg-red-500 hover:bg-red-600 text-white rounded px-4 py-1.5 text-sm font-bold backdrop-blur shadow-lg transition"
           >
             Tutup Layar TV
           </button>
         </div>
         <div className="w-full h-full overflow-hidden">
-           <SRMAntrianTV />
+          <SRMAntrianTV />
         </div>
       </div>
     );
@@ -73,13 +79,17 @@ const SRMAntrian = () => {
 
     const updateVoices = () => {
       const voices = window.speechSynthesis.getVoices();
-      let idVoices = voices.filter(v => v.lang === "id-ID" || v.lang === "id_ID");
+      let idVoices = voices.filter(
+        (v) => v.lang === "id-ID" || v.lang === "id_ID",
+      );
       if (idVoices.length === 0) idVoices = voices;
-      
+
       setAvailableVoices(idVoices);
 
       if (idVoices.length > 0) {
-        const googleVoice = idVoices.find(v => v.name.includes("Google") || v.name.includes("Damayanti"));
+        const googleVoice = idVoices.find(
+          (v) => v.name.includes("Google") || v.name.includes("Damayanti"),
+        );
         if (googleVoice) {
           setSelectedVoiceURI(googleVoice.voiceURI);
         } else {
@@ -90,9 +100,9 @@ const SRMAntrian = () => {
 
     updateVoices();
     window.speechSynthesis.onvoiceschanged = updateVoices;
-    
+
     return () => {
-       window.speechSynthesis.onvoiceschanged = null;
+      window.speechSynthesis.onvoiceschanged = null;
     };
   }, []);
 
@@ -100,7 +110,7 @@ const SRMAntrian = () => {
     if (!isSoundEnabled || !window.speechSynthesis) return;
 
     window.speechSynthesis.cancel();
-    
+
     let text = `Nomor antrian, ${noAntrian}.`;
     if (nama) text += ` Atas nama, ${nama}.`;
     text += ` Silahkan menuju ruang pemeriksaan.`;
@@ -111,12 +121,14 @@ const SRMAntrian = () => {
     utterance.pitch = 1;
 
     const voices = window.speechSynthesis.getVoices();
-    const selectedVoiceObj = voices.find(v => v.voiceURI === selectedVoiceURI);
-    
+    const selectedVoiceObj = voices.find(
+      (v) => v.voiceURI === selectedVoiceURI,
+    );
+
     if (selectedVoiceObj) {
       utterance.voice = selectedVoiceObj;
     } else {
-      const idVoice = voices.find(v => v.lang === "id-ID");
+      const idVoice = voices.find((v) => v.lang === "id-ID");
       if (idVoice) utterance.voice = idVoice;
     }
 
@@ -138,16 +150,16 @@ const SRMAntrian = () => {
         <hr style="border: 1px dashed black; margin: 15px 0" />
         <h1 style="font-size: 64px; margin: 10px 0;">${item.nomor}</h1>
         <p style="font-size: 18px; font-weight: bold; margin: 5px 0;">${item.nama}</p>
-        <p style="margin: 5px 0; font-size: 14px;">RM: ${item.patientId || '-'}</p>
+        <p style="margin: 5px 0; font-size: 14px;">RM: ${item.patientId || "-"}</p>
         <hr style="border: 1px dashed black; margin: 15px 0" />
-        <p style="font-size: 12px;">Waktu: ${new Date(item.waktuDaftar).toLocaleString('id-ID')}</p>
+        <p style="font-size: 12px;">Waktu: ${new Date(item.waktuDaftar).toLocaleString("id-ID")}</p>
         <p style="font-size: 12px; margin-top: 10px;">Silakan tunggu giliran Anda. Terima kasih.</p>
       </div>
       <script>
         window.onload = function() { window.print(); window.close(); }
       </script>
     `;
-    const printWindow = window.open('', '', 'width=400,height=600');
+    const printWindow = window.open("", "", "width=400,height=600");
     if (printWindow) {
       printWindow.document.write(printContent);
       printWindow.document.close();
@@ -156,7 +168,7 @@ const SRMAntrian = () => {
 
   const sendWA = (item: any) => {
     const message = `Halo ${item.nama}, nomor antrian Anda adalah *${item.nomor}*. Silakan bersiap-siap menuju ruang pemeriksaan karena giliran Anda sudah dekat. Terima kasih.`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   const currentQueueItem = queueState.list.find(
@@ -267,14 +279,14 @@ const SRMAntrian = () => {
                 Kontrol Antrian
               </h3>
             </div>
-            
+
             {availableVoices.length > 0 && (
-              <select 
-                value={selectedVoiceURI} 
+              <select
+                value={selectedVoiceURI}
                 onChange={(e) => setSelectedVoiceURI(e.target.value)}
                 className="text-xs border border-slate-300 rounded px-2 py-1 text-slate-600 focus:outline-none focus:border-blue-500 max-w-[200px]"
               >
-                {availableVoices.map(v => (
+                {availableVoices.map((v) => (
                   <option key={v.voiceURI} value={v.voiceURI}>
                     {v.name}
                   </option>
@@ -338,12 +350,16 @@ const SRMAntrian = () => {
             >
               <RotateCcw className="w-4 h-4" /> Reset Antrian
             </button>
-            <button 
+            <button
               onClick={() => setIsSoundEnabled(!isSoundEnabled)}
               className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded text-sm font-medium flex items-center gap-2 shadow-sm"
             >
-              {isSoundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-              {isSoundEnabled ? 'Suara Aktif' : 'Suara Mati'}
+              {isSoundEnabled ? (
+                <Volume2 className="w-4 h-4" />
+              ) : (
+                <VolumeX className="w-4 h-4" />
+              )}
+              {isSoundEnabled ? "Suara Aktif" : "Suara Mati"}
             </button>
             <button
               onClick={() => setIsFullscreenTV(true)}

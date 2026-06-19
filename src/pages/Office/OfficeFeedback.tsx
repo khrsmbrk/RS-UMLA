@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   MessageCircle,
   AlertTriangle,
@@ -9,9 +9,12 @@ import {
   Activity,
   MessageSquare,
   TrendingDown,
+  Search
 } from "lucide-react";
 
 export default function OfficeFeedback() {
+  const [searchTerm, setSearchTerm] = useState("");
+
   const feedbacks = [
     {
       id: "FB-012",
@@ -44,6 +47,8 @@ export default function OfficeFeedback() {
       unit: "Instalasi Gawat Darurat",
     },
   ];
+
+  const filtered = feedbacks.filter(fb => fb.title.toLowerCase().includes(searchTerm.toLowerCase()) || fb.unit.toLowerCase().includes(searchTerm.toLowerCase()) || fb.id.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto pb-10">
@@ -161,9 +166,19 @@ export default function OfficeFeedback() {
             <h3 className="font-black text-slate-800 flex items-center gap-2 uppercase tracking-widest text-sm">
               Daftar Feedback & Antrean Aksi
             </h3>
+            <div className="relative w-full sm:w-64">
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Cari Tiket / Unit / Judul..."
+                  className="w-full pl-9 pr-4 py-2 border border-slate-200 bg-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all shadow-sm"
+                />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
-            {feedbacks.map((fb, i) => (
+            {filtered.map((fb, i) => (
               <div
                 key={i}
                 className="p-5 hover:bg-slate-50 transition-colors flex items-start gap-5 group cursor-pointer"
@@ -218,6 +233,9 @@ export default function OfficeFeedback() {
                 </button>
               </div>
             ))}
+             {filtered.length === 0 && (
+                <div className="p-12 text-center text-slate-500 italic">Tidak ada feedback ditemukan.</div>
+             )}
           </div>
         </div>
       </div>

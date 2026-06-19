@@ -3,27 +3,29 @@ import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
 import { useOfficeStore } from "./store/officeStore";
 import { logout as authLogout } from "./store/auth";
 import {
-  Building2,
-  LogOut,
-  LayoutDashboard,
   Search,
-  Bell,
-  Menu,
-  X,
-  UserCircle,
+  Sun,
+  LayoutDashboard,
   Users,
+  Activity,
+  Bed,
   FileText,
-  CheckCircle,
-  TrendingUp,
-  Calendar,
-  AlertCircle,
+  Syringe,
+  Microscope,
+  Stethoscope,
+  Pill,
+  Briefcase,
+  Archive,
+  BarChart2,
+  Settings,
+  LogOut,
+  ChevronDown,
 } from "lucide-react";
 
 export default function OfficeLayout() {
-  const { userRole, logout } = useOfficeStore();
+  const { userRole, currentUser, logout } = useOfficeStore();
   const navigate = useNavigate();
   const location = useLocation();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!userRole) {
@@ -39,618 +41,293 @@ export default function OfficeLayout() {
     navigate("/office/login");
   };
 
-  const getRoleName = () => {
-    const roleNames: Record<string, string> = {
-      bph: "BPH Rumah Sakit",
-      direktur: "Direktur",
-      wadir_medis: "Wakil Direktur Medis",
-      wadir_keuangan: "Wakil Direktur Keuangan",
-      wadir_admin: "Wadir Administrasi & SDI",
-      kabid_jalan: "Kabid Pelayanan Rawat Jalan",
-      kabid_keperawatan: "Kabid Keperawatan",
-      kepala_igd: "Kepala IGD",
-      kepala_inap: "Kepala Instalasi Rawat Inap",
-      kepala_bedah: "Kepala Instalasi Bedah",
-      kepala_farmasi: "Kepala Instalasi Farmasi",
-      kepala_gizi: "Kepala Instalasi Gizi",
-      kepala_lab: "Kepala Instalasi Lab",
-      kepala_rad: "Kepala Instalasi Radiologi",
-      kepala_paviliun: "Kepala Unit Paviliun",
-      kasubag_data: "Kasubag Pengolahan Data",
-      kasubag_akuntansi: "Kasubag Akuntansi",
-      kasubag_pasar: "Kasubag Pemasaran / PKRS",
-      bendahara: "Bendahara",
-      kasubag_aset: "Kasubag Penjagaan Aset",
-      kasubag_kebersihan: "Kasubag Kebersihan",
-      pkrs: "Petugas PKRS",
-      developer_web: "Developer Web",
-      dokter_umum: "Dokter Umum",
-      dokter_gigi: "Dokter Gigi",
-      dokter_spesialis: "Dokter Spesialis",
-      perawat: "Perawat",
-      paramedis: "Paramedis / Bidan",
-      apoteker: "Apoteker",
-      ahli_gizi: "Ahli Gizi",
-      analis_lab: "Analis Laboratorium",
-      radiografer: "Radiografer",
-      tenaga_adm: "Tenaga Administrasi",
-    };
-    return roleNames[userRole] || "Pegawai RSUMLA";
+  const menuGroups = {
+    Clinical: [
+      "/office/patient",
+      "/office/room",
+      "/office/medical",
+      "/office/telemedicine",
+    ],
+    Diagnostics: [
+      "/office/laboratory",
+      "/office/radiology",
+      "/office/medicine",
+      "/office/clinicalpharm",
+      "/office/bloodbank",
+    ],
+    Operations: [
+      "/office/hr-management",
+      "/office/inventory",
+      "/office/fleet",
+      "/office/recruitment",
+      "/office/shift",
+    ],
+    "Finance & Insights": [
+      "/office/finance",
+      "/office/analytic",
+      "/office/procurement",
+      "/office/audit",
+    ],
   };
 
-  const isBph = ["bph"].includes(userRole);
-  const isDireksi = [
-    "direktur",
-    "wadir_medis",
-    "wadir_keuangan",
-    "wadir_admin",
-  ].includes(userRole);
-  const isManajemen = [
-    "kabid_jalan",
-    "kabid_keperawatan",
-    "kepala_igd",
-    "kepala_inap",
-    "kepala_bedah",
-    "kepala_farmasi",
-    "kepala_gizi",
-    "kepala_lab",
-    "kepala_rad",
-    "kepala_paviliun",
-    "kasubag_data",
-    "kasubag_akuntansi",
-    "kasubag_pasar",
-    "bendahara",
-    "kasubag_aset",
-    "kasubag_kebersihan",
-  ].includes(userRole);
-  const isNakes = [
-    "dokter_umum",
-    "dokter_gigi",
-    "dokter_spesialis",
-    "perawat",
-    "paramedis",
-    "apoteker",
-    "ahli_gizi",
-    "analis_lab",
-    "radiografer",
-  ].includes(userRole);
-  const isKeuangan = [
-    "wadir_keuangan",
-    "kasubag_akuntansi",
-    "bendahara",
-  ].includes(userRole);
-  const isAset = ["wadir_admin", "kasubag_aset", "kasubag_kebersihan"].includes(
-    userRole,
-  );
-  const isSDM = ["wadir_admin", "tenaga_adm", "kasubag_data"].includes(
-    userRole,
-  );
-
-  const isAdminIT = ["tenaga_adm", "kasubag_data", "developer_web"].includes(userRole);
-
-  const menuItems: any[] = [];
-
-  // Semua Role
-  menuItems.push({
-    path: "/office/dashboard",
-    label: "Home Dashboard",
-    icon: LayoutDashboard,
-  });
-  menuItems.push({ path: "/office/chat", label: "Pesan Internal", icon: Bell });
-  menuItems.push({
-    path: "/office/ess",
-    label: "Cuti & Slip Gaji",
-    icon: FileText,
-  });
-  menuItems.push({
-    path: "/office/appraisal",
-    label: "KPI Saya",
-    icon: CheckCircle,
-  });
-  menuItems.push({
-    path: "/office/calendar",
-    label: "E-Meeting",
-    icon: Calendar,
-  });
-  menuItems.push({
-    path: "/office/incidents",
-    label: "Pelaporan IKP",
-    icon: AlertCircle,
-  });
-
-  if (isBph || isDireksi) {
-    if (isKeuangan)
-      menuItems.push({
-        path: "/office/finance",
-        label: "Keuangan Korporat",
-        icon: TrendingUp,
-      });
-    menuItems.push({
-      path: "/office/hr-analytics",
-      label: "Kinerja Pegawai",
-      icon: Users,
-    });
-    menuItems.push({
-      path: "/office/audit",
-      label: "Audit SPI",
-      icon: AlertCircle,
-    });
-    menuItems.push({
-      path: "/office/contracts",
-      label: "Manajemen PKS",
-      icon: FileText,
-    });
-    menuItems.push({
-      path: "/office/nota-dinas",
-      label: "Surat & Disposisi",
-      icon: FileText,
-    });
-    menuItems.push({
-      path: "/office/casemix",
-      label: "Casemix & BPJS",
-      icon: TrendingUp,
-    });
-  }
-
-  if (isManajemen) {
-    menuItems.push({
-      path: "/office/nota-dinas",
-      label: "Nota Dinas Cepat",
-      icon: FileText,
-    });
-    menuItems.push({
-      path: "/office/shift",
-      label: "Manajemen Shift (Tim)",
-      icon: Calendar,
-    });
-    menuItems.push({
-      path: "/office/room-booking",
-      label: "Booking Ruangan",
-      icon: Calendar,
-    });
-    menuItems.push({
-      path: "/office/doc-control",
-      label: "Document Control",
-      icon: FileText,
-    });
-    if (!isBph && !isDireksi) {
-      menuItems.push({
-        path: "/office/audit",
-        label: "Kanban Akreditasi",
-        icon: AlertCircle,
-      });
-    }
-  }
-
-  if (isNakes) {
-    menuItems.push({
-      path: "/office/shift",
-      label: "Jadwal Jaga",
-      icon: Calendar,
-    });
-    menuItems.push({
-      path: "/office/archive",
-      label: "SPO & Pedoman Medis",
-      icon: FileText,
-    });
-    menuItems.push({
-      path: "/office/elearning",
-      label: "CME & Pelatihan",
-      icon: Search,
-    });
-
-    // Nakes specific items
+  const getIcon = (label: string) => {
+    const l = label.toLowerCase();
+    if (l.includes("dashboard")) return <LayoutDashboard className="w-4 h-4" />;
+    if (l.includes("pasien") || l.includes("patient") || l.includes("kamar"))
+      return <Bed className="w-4 h-4" />;
     if (
-      ["dokter_spesialis", "dokter_umum", "perawat", "analis_lab"].includes(
-        userRole,
-      )
-    ) {
-      menuItems.push({
-        path: "/office/blood-bank",
-        label: "Bank Darah",
-        icon: Search,
-      });
+      l.includes("sdm") ||
+      l.includes("pegawai") ||
+      l.includes("staf") ||
+      l.includes("hr")
+    )
+      return <Users className="w-4 h-4" />;
+    if (
+      l.includes("analitik") ||
+      l.includes("laporan") ||
+      l.includes("analisis")
+    )
+      return <BarChart2 className="w-4 h-4" />;
+    if (l.includes("keuangan")) return <FileText className="w-4 h-4" />;
+    if (l.includes("farmasi") || l.includes("obat"))
+      return <Pill className="w-4 h-4" />;
+    if (l.includes("medis") || l.includes("dokter"))
+      return <Stethoscope className="w-4 h-4" />;
+    if (l.includes("aset") || l.includes("inventori") || l.includes("kontrak"))
+      return <Archive className="w-4 h-4" />;
+    if (l.includes("pengadaan")) return <Briefcase className="w-4 h-4" />;
+    return <Activity className="w-4 h-4" />;
+  };
+
+  const getNavItems = () => {
+    const defaultNavs = [{ label: "Dashboard", path: "/office/dashboard" }];
+
+    switch (userRole) {
+      case "bph":
+        return [
+          ...defaultNavs,
+          { label: "Analitik & Laporan", path: "/office/analytic" },
+          { label: "Keuangan", path: "/office/finance" },
+          { label: "Audit Internal", path: "/office/audit" },
+        ];
+      case "direktur":
+        return [
+          ...defaultNavs,
+          { label: "Analitik & Laporan", path: "/office/analytic" },
+          { label: "Keuangan", path: "/office/finance" },
+          { label: "SDM & Pegawai", path: "/office/hr-management" },
+          { label: "Manajemen Aset", path: "/office/assets" },
+          { label: "Manajemen Kontrak", path: "/office/contracts" },
+          { label: "Manajemen Inventori", path: "/office/inventory" },
+        ];
+      case "wadir_medis":
+        return [
+          ...defaultNavs,
+          { label: "Analisis Medis", path: "/office/analytic" },
+          { label: "Ketersediaan Kamar", path: "/office/room" },
+          { label: "Farmasi & Obat", path: "/office/medicine" },
+          { label: "Dokter & Staf Medis", path: "/office/doctors" },
+          { label: "Manajemen Casemix", path: "/office/casemix" },
+        ];
+      case "wadir_keuangan":
+        return [
+          ...defaultNavs,
+          { label: "Analisis Keuangan", path: "/office/analytic" },
+          { label: "Manajemen Keuangan", path: "/office/finance" },
+          { label: "Pengadaan", path: "/office/procurement" },
+          { label: "Manajemen Aset", path: "/office/assets" },
+        ];
+      case "wadir_admin":
+        return [
+          ...defaultNavs,
+          { label: "Analisis SDM", path: "/office/hr-analytics" },
+          { label: "Manajemen HRD", path: "/office/hr-management" },
+          { label: "Perekrutan", path: "/office/recruitment" },
+          { label: "Manajemen Armada", path: "/office/fleet" },
+          { label: "Nota Dinas", path: "/office/nota-dinas" },
+        ];
+      case "kepala_igd":
+        return [
+          ...defaultNavs,
+          { label: "Data Pasien", path: "/office/patient" },
+          { label: "Ketersediaan Kamar", path: "/office/room" },
+          { label: "Jadwal Dokter", path: "/office/doctors" },
+          { label: "Jadwal Shift", path: "/office/shift" },
+          { label: "Farmasi", path: "/office/medicine" },
+        ];
+      case "kasubag_pegawai":
+        return [
+          ...defaultNavs,
+          { label: "Data Pegawai", path: "/office/hr-management" },
+          { label: "Rapor Pegawai", path: "/office/appraisal" },
+          { label: "Perekrutan", path: "/office/recruitment" },
+          { label: "Jadwal & Shift", path: "/office/shift" },
+          { label: "E-Learning", path: "/office/elearning" },
+        ];
+      case "dokter_umum":
+      case "dokter_spesialis":
+        return [
+          ...defaultNavs,
+          { label: "Daftar Pasien", path: "/office/patient" },
+          { label: "Ketersediaan Kamar", path: "/office/room" },
+          { label: "Permintaan Farmasi", path: "/office/medicine" },
+          { label: "Jadwal & Agenda", path: "/office/calendar" },
+          { label: "Layanan Telemedisin", path: "/office/telemedicine" },
+        ];
+      case "perawat":
+      case "paramedis":
+        return [
+          ...defaultNavs,
+          { label: "Data Pasien Blok", path: "/office/patient" },
+          { label: "Manajemen Kamar", path: "/office/room" },
+          { label: "Jadwal Shift", path: "/office/shift" },
+          { label: "Permintaan Darah", path: "/office/bloodbank" },
+        ];
+      case "apoteker":
+        return [
+          ...defaultNavs,
+          { label: "Inventaris Farmasi", path: "/office/inventory" },
+          { label: "Resep Obat", path: "/office/medicine" },
+          { label: "Farmasi Klinis", path: "/office/clinicalpharm" },
+        ];
+      case "staf_admin":
+      case "developer_web":
+        return [
+          ...defaultNavs,
+          { label: "Ticketing & Bantuan", path: "/office/ticketing" },
+          { label: "Sistem Informasi Web", path: "/office/developer" },
+          { label: "Nota Dinas", path: "/office/nota-dinas" },
+          { label: "Sistem Employee", path: "/office/ess" },
+          { label: "Manajemen Arsip", path: "/office/archive" },
+        ];
+      default:
+        return [
+          ...defaultNavs,
+          { label: "Pasien & Klinis", path: "/office/patient" },
+          { label: "Kamar", path: "/office/room" },
+          { label: "HR & Pegawai", path: "/office/hr-management" },
+          { label: "Pengadaan", path: "/office/procurement" },
+          { label: "Analitik Pusat", path: "/office/analytic" },
+        ];
     }
-    if (["apoteker", "perawat", "dokter_umum"].includes(userRole)) {
-      menuItems.push({
-        path: "/office/inventory",
-        label: "Gudang Farmasi",
-        icon: Search,
-      });
+  };
+
+  const navItems = React.useMemo(() => getNavItems(), [userRole]);
+
+  useEffect(() => {
+    if (userRole && location.pathname !== "/office/login" && location.pathname !== "/office/dashboard" && location.pathname !== "/office/access-denied") {
+      const allowedPaths = navItems.map((item) => item.path);
+      const isAllowed = allowedPaths.some((p) => location.pathname.startsWith(p));
+      if (!isAllowed) {
+        navigate("/office/access-denied");
+      }
     }
-    if (userRole === "ahli_gizi") {
-      menuItems.push({
-        path: "/office/dietitian",
-        label: "Instalasi Gizi",
-        icon: Search,
-      });
-      menuItems.push({
-        path: "/office/nutrition-mfg",
-        label: "Produksi Susu/Enteral",
-        icon: Search,
-      });
-    }
-    if (["perawat", "bidan"].includes(userRole)) {
-      menuItems.push({
-        path: "/office/cssd",
-        label: "Sterilisasi CSSD",
-        icon: Search,
-      });
-      menuItems.push({
-        path: "/office/laundry",
-        label: "Linen Laundry",
-        icon: Search,
-      });
-      menuItems.push({
-        path: "/office/bed-management",
-        label: "Bed Management",
-        icon: Search,
-      });
-      menuItems.push({
-        path: "/office/morgue",
-        label: "Kamar Jenazah",
-        icon: Search,
-      });
-    }
-    if (["dokter_spesialis", "dokter_umum"].includes(userRole)) {
-      menuItems.push({
-        path: "/office/credentials",
-        label: "Komite Medik (Kredensial)",
-        icon: Search,
-      });
-    }
-  }
-
-  if (isKeuangan) {
-    if (!isBph && !isDireksi)
-      menuItems.push({
-        path: "/office/finance",
-        label: "Keuangan Dashboard",
-        icon: TrendingUp,
-      });
-    menuItems.push({
-      path: "/office/procurement",
-      label: "Approval Pengadaan",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/casemix",
-      label: "Casemix & Klaim",
-      icon: TrendingUp,
-    });
-  }
-
-  if (isAset) {
-    menuItems.push({
-      path: "/office/assets",
-      label: "Aset Kritis & PM",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/biomedical",
-      label: "Kalibrasi Alkes",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/patrol",
-      label: "Log Patroli & IPSRS",
-      icon: CheckCircle,
-    });
-    menuItems.push({
-      path: "/office/ticketing",
-      label: "Tiket Perbaikan",
-      icon: AlertCircle,
-    });
-    if (["kasubag_kebersihan", "wadir_admin"].includes(userRole)) {
-      menuItems.push({
-        path: "/office/waste",
-        label: "Limbah & Sanitasi",
-        icon: CheckCircle,
-      });
-      menuItems.push({
-        path: "/office/laundry",
-        label: "Manajemen Linen",
-        icon: CheckCircle,
-      });
-    }
-    if (userRole === "kasubag_aset" || userRole === "wadir_admin")
-      menuItems.push({
-        path: "/office/fleet",
-        label: "Fleet Management",
-        icon: CheckCircle,
-      });
-  }
-
-  if (isSDM) {
-    menuItems.push({
-      path: "/office/hr-analytics",
-      label: "HR Analytics",
-      icon: Users,
-    });
-    menuItems.push({
-      path: "/office/hr-management",
-      label: "Data Kepegawaian",
-      icon: Users,
-    });
-    menuItems.push({
-      path: "/office/recruitment",
-      label: "E-Recruitment",
-      icon: Users,
-    });
-    menuItems.push({
-      path: "/office/archive",
-      label: "Arsip & Kebijakan",
-      icon: FileText,
-    });
-  }
-
-  // Global or additional specific menu additions based on precise role matching
-  if (userRole === "wadir_admin" || userRole === "hrd") {
-    menuItems.push({
-      path: "/office/it-support",
-      label: "IT & Jaringan",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/legal",
-      label: "Hukum & Legal",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/security",
-      label: "Keamanan (Security)",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/parking",
-      label: "Manajemen Parkir",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/diklit",
-      label: "Pendidikan & Penelitian",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/call-center",
-      label: "Call Center (PKRS)",
-      icon: Search,
-    });
-  }
-
-  if (userRole === "wadir_admin" || userRole === "kasubag_aset") {
-    menuItems.push({
-      path: "/office/k3rs",
-      label: "Komite K3RS",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/gas-medis",
-      label: "Instalasi Gas Medis",
-      icon: Search,
-    });
-  }
-
-  if (["tenaga_adm", "kasubag_data", "developer_web", "wadir_admin", "direktur"].includes(userRole)) {
-    menuItems.push({
-      path: "/office/developer-web",
-      label: "Developer Web",
-      icon: Search,
-    });
-  }
-
-  if (userRole === "wadir_medis") {
-    menuItems.push({ path: "/office/ppi", label: "Komite PPI", icon: Search });
-    menuItems.push({
-      path: "/office/quality",
-      label: "Komite Mutu (PMKP)",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/spiritual",
-      label: "Bimbingan Rohani",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/rm-admin",
-      label: "Rekam Medis (RM)",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/lab-admin",
-      label: "Laboratorium (Admin)",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/radiology-admin",
-      label: "Radiologi & PACS",
-      icon: Search,
-    });
-    menuItems.push({
-      path: "/office/hemodialysis-admin",
-      label: "Hemodialisa (Admin)",
-      icon: Search,
-    });
-  }
-
-  // 30 NEW FEATURES - assigned broadly to wadir_medis to ensure they show up in demo role
-  if (
-    userRole === "wadir_medis" ||
-    userRole === "direktur" ||
-    userRole === "wadir_admin"
-  ) {
-    menuItems.push(
-      { path: "/office/pharmacy-admin", label: "Farmasi PBF", icon: Search },
-      { path: "/office/physiotherapy", label: "Fisioterapi", icon: Search },
-      { path: "/office/discharge", label: "Discharge Planning", icon: Search },
-      { path: "/office/outpatient", label: "Poli Rawat Jalan", icon: Search },
-      { path: "/office/inpatient", label: "Poli Rawat Inap", icon: Search },
-      { path: "/office/surgery", label: "Kamar Bedah (IBS)", icon: Search },
-      { path: "/office/icu", label: "ICU & Kritis", icon: Search },
-      { path: "/office/nicu", label: "NICU / Perina", icon: Search },
-      { path: "/office/emergency", label: "IGD & Triage", icon: Search },
-      { path: "/office/mcu", label: "Medical Check Up", icon: Search },
-      { path: "/office/blood-donor", label: "Donor Darah", icon: Search },
-      { path: "/office/cathlab", label: "Cathlab", icon: Search },
-      { path: "/office/endoscopy", label: "Endoskopi", icon: Search },
-      { path: "/office/vip-clinic", label: "Klinik Eksekutif", icon: Search },
-      { path: "/office/homecare", label: "Homecare", icon: Search },
-      { path: "/office/telemedicine", label: "Telemedicine", icon: Search },
-      {
-        path: "/office/medical-tourism",
-        label: "Medical Tourism",
-        icon: Search,
-      },
-      { path: "/office/insurance", label: "Asuransi Swasta", icon: Search },
-      { path: "/office/internal-audit", label: "SPI / Audit RS", icon: Search },
-      { path: "/office/ethics", label: "Komite Etik RS", icon: Search },
-      { path: "/office/clinical-pharm", label: "Farmasi Klinis", icon: Search },
-      { path: "/office/forensic", label: "Forensik / Visum", icon: Search },
-      { path: "/office/health-promo", label: "PKRS / Promkes", icon: Search },
-      { path: "/office/research", label: "Penelitian RS", icon: Search },
-      { path: "/office/library", label: "Perpustakaan", icon: Search },
-      { path: "/office/mess", label: "Asrama Pegawai", icon: Search },
-      { path: "/office/daycare", label: "Daycare RS", icon: Search },
-      { path: "/office/nutrition-care", label: "Asuhan Gizi", icon: Search },
-      { path: "/office/palliative", label: "Paliatif", icon: Search },
-      { path: "/office/optic", label: "Optik / Kacamata", icon: Search },
-    );
-  }
+  }, [location.pathname, userRole, navigate, navItems]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row font-sans text-slate-700">
-      {/* Mobile Header */}
-      <div className="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center">
-        <div className="flex items-center text-blue-600 font-bold text-lg">
-          <Building2 className="w-6 h-6 mr-2" /> RS UMLA Office
-        </div>
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="text-slate-500 p-2"
-        >
-          {isSidebarOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      {/* Sidebar - Desktop & Mobile */}
-      <div
-        className={`${isSidebarOpen ? "block" : "hidden"} md:block fixed inset-0 z-40 md:static md:w-64 bg-slate-900 flex-shrink-0 flex flex-col text-slate-300 transition-transform`}
-      >
-        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center text-white">
-            <Building2 className="w-8 h-8 text-blue-400 mr-3" />
-            <div>
-              <h1 className="font-bold text-lg leading-tight tracking-tight">
-                RS UMLA
-              </h1>
-              <h2 className="text-blue-400 text-[10px] font-semibold tracking-widest uppercase">
-                Office Portal
-              </h2>
-            </div>
+    <div className="min-h-screen bg-[#F4F7F6] flex font-sans text-slate-800">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
+        {/* Logo */}
+        <div className="h-16 px-6 flex items-center gap-2 shrink-0">
+          <div className="w-6 h-6 rounded bg-teal-500 relative overflow-hidden flex items-center justify-center">
+            {/* Medical cross stylized */}
+            <div className="w-1.5 h-3.5 bg-white rounded-sm absolute"></div>
+            <div className="w-3.5 h-1.5 bg-white rounded-sm absolute"></div>
           </div>
-          <button
-            className="md:hidden text-slate-400 hover:text-white"
-            onClick={() => setIsSidebarOpen(false)}
+          <span className="text-xl font-bold tracking-tight text-slate-800">
+            Meditech
+          </span>
+        </div>
+
+        {/* Navigation */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1 no-scrollbar">
+          {navItems.map((item, idx) => {
+            const isActive =
+              location.pathname.includes(item.path) ||
+              (item.label === "Dashboard" &&
+                location.pathname === "/office/dashboard");
+            return (
+              <Link
+                key={idx}
+                to={item.path}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                  isActive
+                    ? "bg-teal-50/50 text-teal-700 font-medium"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                }`}
+              >
+                <div
+                  className={`${isActive ? "text-teal-600" : "text-slate-400"}`}
+                >
+                  {getIcon(item.label)}
+                </div>
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Bottom Actions */}
+        <div className="p-4 border-t border-slate-100 flex flex-col gap-1">
+          <Link
+            to="/office/login"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors"
           >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <div className="p-5 border-b border-slate-800 bg-slate-800/30">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-slate-700/50 rounded-xl flex items-center justify-center border border-slate-600 shadow-inner">
-              <UserCircle className="w-7 h-7 text-slate-300" />
-            </div>
-            <div className="flex-1 overflow-hidden">
-              <p className="text-white font-black text-sm truncate uppercase tracking-widest">
-                User {userRole}
-              </p>
-              <p className="text-blue-400 font-bold text-[10px] truncate uppercase tracking-widest mt-0.5">
-                {getRoleName()}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-grow py-4 overflow-y-auto px-3 space-y-1">
-          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 px-3">
-            Modul Internal
-          </div>
-          {menuItems.map((item, idx) => (
-            <Link
-              key={idx}
-              to={item.path}
-              className={`flex items-center px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                location.pathname === item.path
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-900/20"
-                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
-              }`}
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <item.icon
-                className={`w-5 h-5 mr-3 ${location.pathname === item.path ? "text-blue-200" : "text-slate-500"}`}
-              />
-              {item.label}
-            </Link>
-          ))}
-
-          {(isNakes || isBph || isDireksi) && (
-            <>
-              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-6 mb-2 px-3">
-                Sistem Medis & Publik
-              </div>
-              {(isNakes || isDireksi || isBph) && (
-                <Link
-                  to="/srm"
-                  className="flex items-center px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all group"
-                >
-                  <LayoutDashboard className="w-5 h-5 mr-3 text-slate-500 group-hover:text-slate-400" />
-                  Portal Medis (SRM)
-                </Link>
-              )}
-              {isNakes && (
-                <Link
-                  to="/srm/rekam-medis"
-                  className="flex items-center px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all group"
-                >
-                  <FileText className="w-5 h-5 mr-3 text-slate-500 group-hover:text-slate-400" />
-                  Rekam Medis (EMR)
-                </Link>
-              )}
-            </>
-          )}
-        </nav>
-
-        <div className="p-4 border-t border-slate-800">
+            <Settings className="w-4 h-4 text-slate-400" />
+            Pengaturan
+          </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center px-4 py-3 bg-slate-800/50 hover:bg-rose-900/50 border border-slate-700 hover:border-rose-700 hover:text-rose-400 rounded-xl transition-all text-sm font-bold text-slate-400"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-colors"
           >
-            <LogOut className="w-5 h-5 mr-2" /> Logout App
+            <LogOut className="w-4 h-4 text-slate-400" />
+            Keluar
           </button>
         </div>
-      </div>
+      </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-grow flex flex-col min-w-0 overflow-hidden bg-slate-50">
-        <header className="bg-white border-b border-slate-200 h-16 flex justify-between items-center px-4 sm:px-8 shadow-sm">
-          <div className="flex-1 flex items-center">
-            {/* Can put a universal search here */}
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Topbar */}
+        <header className="h-16 px-8 flex items-center justify-between shrink-0 bg-[#F4F7F6]">
+          <div className="relative w-96">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search patients, appointments, records..."
+              className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-shadow"
+            />
           </div>
+
           <div className="flex items-center gap-4">
-            <button className="relative text-slate-400 hover:text-slate-600 p-2">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+            <button className="w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-800 transition-colors">
+              <Sun className="w-4 h-4" />
             </button>
+            <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-full pr-4 pl-1 py-1 cursor-pointer hover:shadow-sm transition-shadow">
+              <img
+                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser?.name || "F S")}&background=0D8ABC&color=fff`}
+                alt="Avatar"
+                className="w-7 h-7 rounded-full bg-slate-100"
+              />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-slate-800 leading-tight">
+                  {currentUser?.name || "Fl Suhan"}
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  {currentUser?.email || "Example@gmail.com"}
+                </span>
+              </div>
+              <ChevronDown className="w-3 h-3 text-slate-400 ml-1" />
+            </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-8">
-          <div className="max-w-7xl mx-auto h-full">
-            <Outlet />
-          </div>
-        </main>
-      </div>
+        {/* Dashboard Content */}
+        <div className="flex-1 overflow-y-auto px-8 pb-8 no-scrollbar">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 }

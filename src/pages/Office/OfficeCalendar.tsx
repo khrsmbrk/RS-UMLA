@@ -9,6 +9,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { getAccessToken, initAuth } from "./store/auth";
+import toast from "react-hot-toast";
 
 export default function OfficeCalendar() {
   const [events, setEvents] = useState<any[]>([]);
@@ -100,9 +101,9 @@ export default function OfficeCalendar() {
       setNewEventTitle("");
       setNewEventDate("");
       fetchEvents();
-      alert("Event berhasil ditambahkan ke Google Calendar Anda!");
+      toast.success("Event berhasil ditambahkan ke Google Calendar Anda!");
     } catch (err: any) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 
